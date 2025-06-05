@@ -1,8 +1,8 @@
 export default function LandingPage() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black">
+    <div className="flex items-center justify-center min-h-screen bg-custom-dark-gray">
       <video
-        className="max-w-full max-h-screen"
+        className="max-w-[90vw] max-h-[90vh]"
         autoPlay
         loop
         muted
