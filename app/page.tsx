@@ -9,7 +9,7 @@ export default function LandingPage() {
         playsInline // Important for iOS to play inline
       >
         {/* You can replace this with your actual video source */}
-        <source src="/videos/sample-video.mp4" type="video/mp4" />
+        <source src="/videos/program.mp4" type="video/mp4" />
         {/* Add more <source> tags for different video formats if needed */}
         Your browser does not support the video tag.
       </video>
