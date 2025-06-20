@@ -28,7 +28,7 @@ export default function LandingPage() {
         Your browser does not support the video tag.
       </video>
       <div className="text-center">
-        <p className="text-neutral-400 mb-2 text-sm">If you're not redirected automatically, you can</p>
+        <p className="text-neutral-400 mb-2 text-sm">If you're not redirected automatically, click below:</p>
         <Link
           href={redirectUrl}
           className="inline-block px-6 py-3 bg-neutral-700 text-white rounded-lg hover:bg-neutral-600 transition-colors text-base font-medium"
