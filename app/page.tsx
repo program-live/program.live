@@ -5,7 +5,7 @@ import Link from "next/link"
 
 export default function LandingPage() {
   const redirectUrl = "https://lu.ma/program"
-  const redirectDelay = 2000 // 2 seconds
+  const redirectDelay = 5000 // 5 seconds
 
   useEffect(() => {
     const timer = setTimeout(() => {
