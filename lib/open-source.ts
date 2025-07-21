@@ -40,6 +40,14 @@ function formatRelativeTime(dateString: string): string {
   return `${Math.floor(diffInDays / 30)} months ago`;
 }
 
+// One project had this word in the name, so we're banning it
+const BANNED_WORDS = ['SHIT'];
+
+function containsBannedWords(text: string): boolean {
+  const upperText = text.toUpperCase();
+  return BANNED_WORDS.some(bannedWord => upperText.includes(bannedWord));
+}
+
 export async function getOpenSourceProjects(limit: number = 10, isMobile: boolean = false): Promise<OpenSourceProject[]> {
   // Adjust limit for mobile devices (reduce by 1/3 if mobile)
   const adjustedLimit = isMobile ? Math.floor(limit * 0.67) : limit;
@@ -80,13 +88,18 @@ export async function getOpenSourceProjects(limit: number = 10, isMobile: boolea
 
     const data: GitHubSearchResponse = await response.json();
 
-    // Transform GitHub API response to our format
-    return data.items.slice(0, adjustedLimit).map((repo): OpenSourceProject => ({
-      title: repo.name,
-      stars: formatStarCount(repo.stargazers_count),
-      url: repo.html_url,
-      createdAt: formatRelativeTime(repo.created_at)
-    }));
+    // Filter out projects with banned words and transform to our format
+    const filteredProjects = data.items
+      .filter(repo => !containsBannedWords(repo.name))
+      .slice(0, adjustedLimit)
+      .map((repo): OpenSourceProject => ({
+        title: repo.name,
+        stars: formatStarCount(repo.stargazers_count),
+        url: repo.html_url,
+        createdAt: formatRelativeTime(repo.created_at)
+      }));
+
+    return filteredProjects;
 
   } catch (error) {
     console.error('Error fetching open source projects:', error);
