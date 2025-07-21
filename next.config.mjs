@@ -9,15 +9,15 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: 'https://youtube.com/@programislive',
-        permanent: false, // Use 307 (temporary redirect) instead of 301
-      },
-    ]
-  },
+  // async redirects() {
+  //   return [
+  //     {
+  //       source: '/',
+  //       destination: 'https://youtube.com/@programislive',
+  //       permanent: false, // Use 307 (temporary redirect) instead of 301
+  //     },
+  //   ]
+  // },
 }
 
 export default nextConfig
