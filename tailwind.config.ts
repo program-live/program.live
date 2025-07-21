@@ -8,8 +8,14 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "*.{js,ts,jsx,tsx,mdx}",
   ],
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     extend: {
+      screens: {
+        xs: "450px",
+      },
       colors: {
         "custom-dark-gray": "#1A1A1A",
         background: "hsl(var(--background))",
