@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import WarpEffect from "./warp-effect";
+import WarpEffect from "@/components/warp-effect";
 
 export default function Sponsors() {
   return (
