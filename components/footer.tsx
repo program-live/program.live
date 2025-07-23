@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import ScrollingText from "./scrolling-text";
 
@@ -22,14 +20,23 @@ const translations = [
 export default function Footer() {
   return (
     <>
-      {/* Footer Spacer */}
+      {/* Spacer */}
       <div className="h-[45px]"></div>
 
       {/* Footer */}
       <div className="fixed bottom-0 inset-x-0 grid grid-cols-12 h-[45px] bg-black z-50">
-        {/* Scrolling Sponsor Banner */}
-        <Link href="https://market.dev" target="_blank" className="relative h-[15px] shrink-0 col-span-full font-extrabold hover:bg-white hover:text-black">
-          <ScrollingText direction="right" speed={1000} className="h-full items-center">
+        {/* Scrolling Sponsor */}
+        <Link 
+          href="https://market.dev" 
+          target="_blank" 
+          className="relative h-[15px] shrink-0 col-span-full font-extrabold hover:bg-white hover:text-black"
+        >
+          <ScrollingText 
+            direction="right" 
+            speed={1000} 
+            className="h-full items-center" 
+            aria-hidden
+          >
             {[...Array(50)].map((_, i) => (
               <span key={i}>
                 MARKET.DEV: THE EASIEST WAY TO SELL DEVEL0PER SERVICES <span className="align-[1px]">◉</span>{'\u00A0'}
@@ -38,6 +45,8 @@ export default function Footer() {
           </ScrollingText>
           <span className="sr-only">Market.dev: the easiest way to sell developer services</span>
         </Link>
+
+        {/* Scrolling Languages */}
         {translations.map((translation, i) => {
           // First row (0-5): odd indexes scroll left, even scroll right
           // Second row (6-11): even indexes scroll left, odd scroll right
@@ -50,6 +59,7 @@ export default function Footer() {
                 direction={shouldScrollLeft ? 'left' : 'right'} 
                 speed={80 + i * 5} 
                 className="h-full items-center"
+                aria-hidden
               >
                 {[...Array(10)].map((_, i) => (
                   <span key={i} className="text-[10px]">{translation.text}{'\u00A0'}</span>
