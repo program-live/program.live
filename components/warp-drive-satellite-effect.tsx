@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import * as THREE from 'three'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
@@ -88,6 +88,53 @@ export default function WarpDriveSatelliteEffect() {
 
   })
 
+  const addParticles = useCallback(() => {
+    const state = stateRef.current
+    let i, x, y, z, colorValue, particle
+
+    // Background stars - smaller but bright
+    for (i = 0; i < state.starHolderCount / 3; i++) { // Increased from /4 to /3
+      x = Math.random() * 24000 - 12000
+      y = Math.random() * 4500 - 2255
+      z = Math.round(Math.random() * state.starDistance)
+      colorValue = Math.floor(Math.random() * 35) + 175 // Fixed range (220-254)
+      particle = {
+        x,
+        y,
+        z,
+        ox: x,
+        oy: y,
+        x2d: 0,
+        y2d: 0,
+        color: { r: colorValue, g: colorValue, b: colorValue, a: 255 },
+      }
+      state.starBgHolder.push(particle)
+    }
+
+    // Main stars - smaller but very bright
+    for (i = 0; i < state.starHolderCount; i++) {
+      x = Math.random() * 10000 - 5000
+      y = Math.random() * 10000 - 5000
+      z = Math.round(Math.random() * state.starDistance)
+      colorValue = Math.floor(Math.random() * 25) + 350 // Fixed range (230-254)
+      particle = {
+        x,
+        y,
+        z,
+        ox: x,
+        oy: y,
+        x2d: 0,
+        y2d: 0,
+        color: { r: colorValue, g: colorValue, b: colorValue, a: 255 },
+        oColor: { r: colorValue, g: colorValue, b: colorValue, a: 255 },
+        w: 1,
+        distance: state.starDistance - z,
+        distanceTotal: Math.round(state.starDistance + state.fov - 1),
+      }
+      state.starHolder.push(particle)
+    }
+  }, [])
+
   // Handle responsive sizing while maintaining 16:9 aspect ratio
   useEffect(() => {
     const handleResize = () => {
@@ -160,15 +207,19 @@ export default function WarpDriveSatelliteEffect() {
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [dimensions])
+  }, [dimensions, addParticles])
 
   // Three.js setup for satellite and text
   useEffect(() => {
     if (!threejsContainerRef.current || !isInitialized) return
 
-    // Scene setup
-    const scene = new THREE.Scene()
-    threeSceneRef.current = scene
+    let collisionGeometry: THREE.BoxGeometry | null = null
+    let collisionMaterial: THREE.MeshBasicMaterial | null = null
+
+    try {
+      // Scene setup
+      const scene = new THREE.Scene()
+      threeSceneRef.current = scene
 
     // Camera setup
     const camera = new THREE.PerspectiveCamera(
@@ -368,8 +419,8 @@ export default function WarpDriveSatelliteEffect() {
     }
     
     // Create a larger invisible collision mesh for easier touch/drag interaction
-    const collisionGeometry = new THREE.BoxGeometry(6, 2.5, 2) // Much larger than the satellite - taller for better drag area
-    const collisionMaterial = new THREE.MeshBasicMaterial({ 
+    collisionGeometry = new THREE.BoxGeometry(6, 2.5, 2)
+    collisionMaterial = new THREE.MeshBasicMaterial({ 
       transparent: true, 
       opacity: 0, // Completely invisible
       side: THREE.DoubleSide,
@@ -484,34 +535,59 @@ export default function WarpDriveSatelliteEffect() {
       console.error('Error loading font:', error)
     })
 
+    } catch (error) {
+      console.error('Error initializing Three.js scene:', error)
+      // Clean up any partially created objects
+      if (threeRendererRef.current) {
+        threeRendererRef.current.dispose()
+        threeRendererRef.current = null
+      }
+      if (threeSceneRef.current) {
+        threeSceneRef.current.clear()
+        threeSceneRef.current = null
+      }
+    }
+
     // Cleanup function with proper memory management
     return () => {
-      if (threejsContainerRef.current && renderer.domElement) {
-        threejsContainerRef.current.removeChild(renderer.domElement)
+      if (threejsContainerRef.current && threeRendererRef.current?.domElement) {
+        try {
+          threejsContainerRef.current.removeChild(threeRendererRef.current.domElement)
+        } catch (error) {
+          console.error('Error removing renderer DOM element:', error)
+        }
       }
       
       // Clean up signal pulse references
       if (signalPulseGroupRef.current) {
-        const pulseRing = signalPulseGroupRef.current.userData.pulseRing
-        if (pulseRing) {
-          if (pulseRing.geometry) pulseRing.geometry.dispose()
-          if (pulseRing.material) {
-            if (Array.isArray(pulseRing.material)) {
-              pulseRing.material.forEach((material: THREE.Material) => material.dispose())
-            } else {
-              pulseRing.material.dispose()
+        try {
+          const pulseRing = signalPulseGroupRef.current.userData.pulseRing
+          if (pulseRing) {
+            if (pulseRing.geometry) pulseRing.geometry.dispose()
+            if (pulseRing.material) {
+              if (Array.isArray(pulseRing.material)) {
+                pulseRing.material.forEach((material: THREE.Material) => material.dispose())
+              } else {
+                pulseRing.material.dispose()
+              }
             }
           }
+        } catch (error) {
+          console.error('Error cleaning up signal pulse:', error)
         }
         signalPulseGroupRef.current = null
       }
       
       // Clean up collision mesh geometry that was created
-      if (collisionGeometry) {
-        collisionGeometry.dispose()
-      }
-      if (collisionMaterial) {
-        collisionMaterial.dispose()
+      try {
+        if (collisionGeometry) {
+          collisionGeometry.dispose()
+        }
+        if (collisionMaterial) {
+          collisionMaterial.dispose()
+        }
+      } catch (error) {
+        console.error('Error cleaning up collision mesh:', error)
       }
       
       if (threeSceneRef.current) {
@@ -539,56 +615,7 @@ export default function WarpDriveSatelliteEffect() {
     }
   }, [dimensions, isInitialized])
 
-
-
-  const addParticles = () => {
-    const state = stateRef.current
-    let i, x, y, z, colorValue, particle
-
-    // Background stars - smaller but bright
-    for (i = 0; i < state.starHolderCount / 3; i++) { // Increased from /4 to /3
-      x = Math.random() * 24000 - 12000
-      y = Math.random() * 4500 - 2255
-      z = Math.round(Math.random() * state.starDistance)
-      colorValue = Math.floor(Math.random() * 35) + 175 // Even lighter range (220-254)
-      particle = {
-        x,
-        y,
-        z,
-        ox: x,
-        oy: y,
-        x2d: 0,
-        y2d: 0,
-        color: { r: colorValue, g: colorValue, b: colorValue, a: 255 },
-      }
-      state.starBgHolder.push(particle)
-    }
-
-    // Main stars - smaller but very bright
-    for (i = 0; i < state.starHolderCount; i++) {
-      x = Math.random() * 10000 - 5000
-      y = Math.random() * 10000 - 5000
-      z = Math.round(Math.random() * state.starDistance)
-      colorValue = Math.floor(Math.random() * 25) + 350 // Brighter range (230-254)
-      particle = {
-        x,
-        y,
-        z,
-        ox: x,
-        oy: y,
-        x2d: 0,
-        y2d: 0,
-        color: { r: colorValue, g: colorValue, b: colorValue, a: 255 },
-        oColor: { r: colorValue, g: colorValue, b: colorValue, a: 255 },
-        w: 1,
-        distance: state.starDistance - z,
-        distanceTotal: Math.round(state.starDistance + state.fov - 1),
-      }
-      state.starHolder.push(particle)
-    }
-  }
-
-  const clearImageData = () => {
+  const clearImageData = useCallback(() => {
     const state = stateRef.current
     if (!state.pix) return
 
@@ -598,9 +625,9 @@ export default function WarpDriveSatelliteEffect() {
       state.pix[i + 2] = state.backgroundColor.b
       state.pix[i + 3] = state.backgroundColor.a
     }
-  }
+  }, [])
 
-  const setPixel = (x: number, y: number, r: number, g: number, b: number, a: number) => {
+  const setPixel = useCallback((x: number, y: number, r: number, g: number, b: number, a: number) => {
     const state = stateRef.current
     if (!state.pix) return
 
@@ -609,9 +636,9 @@ export default function WarpDriveSatelliteEffect() {
     state.pix[i + 1] = g
     state.pix[i + 2] = b
     state.pix[i + 3] = a
-  }
+  }, [dimensions.width])
 
-  const setPixelAdditive = (x: number, y: number, r: number, g: number, b: number, a: number) => {
+  const setPixelAdditive = useCallback((x: number, y: number, r: number, g: number, b: number, a: number) => {
     const state = stateRef.current
     if (!state.pix) return
 
@@ -620,9 +647,9 @@ export default function WarpDriveSatelliteEffect() {
     state.pix[i + 1] = state.pix[i + 1] + g
     state.pix[i + 2] = state.pix[i + 2] + b
     state.pix[i + 3] = a
-  }
+  }, [dimensions.width])
 
-  const drawLine = (x1: number, y1: number, x2: number, y2: number, r: number, g: number, b: number, a: number) => {
+  const drawLine = useCallback((x1: number, y1: number, x2: number, y2: number, r: number, g: number, b: number, a: number) => {
     const dx = Math.abs(x2 - x1)
     const dy = Math.abs(y2 - y1)
     const sx = x1 < x2 ? 1 : -1
@@ -646,7 +673,7 @@ export default function WarpDriveSatelliteEffect() {
         ly += sy
       }
     }
-  }
+  }, [dimensions.width, dimensions.height, setPixel])
 
   const render = () => {
     const state = stateRef.current
@@ -918,7 +945,11 @@ export default function WarpDriveSatelliteEffect() {
       
       // Render the 3D scene
       if (threeRendererRef.current && threeSceneRef.current && threeCameraRef.current) {
-        threeRendererRef.current.render(threeSceneRef.current, threeCameraRef.current)
+        try {
+          threeRendererRef.current.render(threeSceneRef.current, threeCameraRef.current)
+        } catch (error) {
+          console.error('Error rendering Three.js scene:', error)
+        }
       }
     }
 
