@@ -2,7 +2,7 @@ import { getHackerNewsStories } from "@/lib/hacker-news";
 import Link from "next/link";
 import { headers } from "next/headers";
 
-export default async function HackerNewsStories() {
+export default async function BreakingNews() {
   const ua = (await headers()).get('user-agent') ?? '';
   const isMobile = /Android|iPhone|iPad|iPod/i.test(ua);
   const hackerNewsStories = await getHackerNewsStories(70, isMobile);
