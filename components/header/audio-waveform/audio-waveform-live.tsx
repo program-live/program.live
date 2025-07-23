@@ -46,11 +46,11 @@ export default function AudioWaveformOnline({ className }: AudioWaveformOnlinePr
   }, []);
 
   return (
-    <div className={`flex items-center gap-0.5 h-[10px] ${className}`}>
+    <div className={`flex items-center gap-2 h-10 ${className}`}>
       {waveformHeights.map((height, i) => (
         <div
           key={i}
-          className="w-[1px] bg-white transition-all duration-100 ease-out"
+          className="w-1 bg-primary transition-all duration-100 ease-out"
           style={{
             height: mounted ? `${height}%` : '50%',
           }}

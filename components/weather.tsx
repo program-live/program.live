@@ -6,10 +6,10 @@ export default async function Weather() {
   return (
     <div className="flex justify-between">
       {weatherData.map((day, i) => (
-        <div key={i} className="text-center -ml-px">
+        <div key={i} className="text-center -ml-1">
           <div>{day.day}</div>
           <div>{day.condition}</div>
-          <div className="pl-1">{day.temp}°</div>
+          <div className="pl-4">{day.temp}°</div>
         </div>
       ))}
     </div>

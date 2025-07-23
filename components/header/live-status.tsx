@@ -7,16 +7,16 @@ export default function LiveStatus({ className }: { className?: string }) {
 
   if (isLive) {
     return (
-      <div className={`flex items-center gap-[5px] ${className}`}>
-        <div className="size-[7px] bg-[#FF0066]" />
+      <div className={`flex items-center gap-5 ${className}`}>
+        <div className="size-7 bg-destructive" />
         <span>LIVE</span>
       </div>
     );
   }
 
   return (
-    <div className={`flex items-center gap-[5px] ${className}`}>
-      <div className="size-[7px] bg-neutral-600" />
+    <div className={`flex items-center gap-5 ${className}`}>
+      <div className="size-7 bg-muted-foreground" />
       <span>OFFLINE</span>
     </div>
   );

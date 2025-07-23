@@ -21,15 +21,15 @@ export default function Footer() {
   return (
     <>
       {/* Spacer */}
-      <div className="h-[45px]"></div>
+      <div className="h-45"></div>
 
       {/* Footer */}
-      <div className="fixed bottom-0 inset-x-0 grid grid-cols-12 h-[45px] bg-black z-50">
+      <div className="fixed bottom-0 inset-x-0 grid grid-cols-12 h-45 bg-background z-50">
         {/* Scrolling Sponsor */}
         <Link 
           href="https://market.dev" 
           target="_blank" 
-          className="relative h-[15px] shrink-0 col-span-full font-extrabold hover:bg-white hover:text-black"
+          className="relative h-15 shrink-0 col-span-full font-extrabold hover:bg-primary hover:text-primary-foreground"
         >
           <ScrollingText 
             direction="right" 
@@ -54,7 +54,7 @@ export default function Footer() {
           const shouldScrollLeft = isFirstRow ? i % 2 === 0 : i % 2 === 1;
           
           return (
-            <div key={i} className="col-span-2 h-[15px] relative opacity-60">
+            <div key={i} className="col-span-2 h-15 relative text-muted-foreground">
               <ScrollingText 
                 direction={shouldScrollLeft ? 'left' : 'right'} 
                 speed={80 + i * 5} 
@@ -62,7 +62,7 @@ export default function Footer() {
                 aria-hidden
               >
                 {[...Array(10)].map((_, i) => (
-                  <span key={i} className="text-[10px]">{translation.text}{'\u00A0'}</span>
+                  <span key={i} className="text-10">{translation.text}{'\u00A0'}</span>
                 ))}
               </ScrollingText>
               <span className="sr-only">{translation.text}</span>

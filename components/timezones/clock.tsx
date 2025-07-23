@@ -90,7 +90,7 @@ export function Clock({ time, timezone, baseTimezone }: ClockProps) {
       {/* +1 indicator for next day */}
       {isNextDay && (
         <span
-          className="absolute -bottom-[1px] -right-[1px] text-[7px] font-extrabold leading-none tracking-wider z-10"
+          className="absolute -bottom-1 -right-1 text-[7px] font-extrabold leading-none tracking-wider z-10"
           style={{ filter: "drop-shadow('2px 2px black')" }}
         >
           +1

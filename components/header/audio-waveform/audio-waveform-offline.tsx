@@ -21,12 +21,12 @@ export default function AudioWaveformOffline({ className }: AudioWaveformOffline
   }, []);
 
   return (
-    <div className={`flex items-center gap-0.5 h-[10px] justify-center ${className}`}>
+    <div className={`flex items-center gap-2 h-10 justify-center ${className}`}>
       {Array(5).fill(0).map((_, i) => (
         <div
           key={i}
-          className={`w-[1px] transition-all duration-150 ease-out bg-neutral-400 ${
-            i === tappingIndex ? 'h-[4px]' : 'h-[1px]'
+          className={`w-1 transition-all duration-150 ease-out bg-primary/60 ${
+            i === tappingIndex ? 'h-4' : 'h-1'
           }`}
         />
       ))}

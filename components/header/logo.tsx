@@ -7,14 +7,14 @@ export default function Logo({ className }: { className?: string }) {
   const { isLive } = useYouTubeLiveStatus();
 
   return (
-    <div className={cn("flex items-center justify-center text-[15px]/[15px] h-[15px]", className)}>
-      <h1 className="text-[15px]/[15px] self-center font-extrabold">
+    <div className={cn("flex items-center justify-center h-15", className)}>
+      <h1 className="self-center font-extrabold">
         <span className="sr-only">Program Live</span>
-        <span aria-hidden className="inline-flex gap-[3px] items-center">
+        <span aria-hidden className="inline-flex gap-3 items-center text-15 leading-15">
           <span>PR0GRAM</span>
           <span className={cn(
-            "font-extrabold italic tracking-tighter pl-0.5 pr-[5px]",
-            isLive ? "animate-live-flash" : "bg-white text-black"
+            "font-extrabold italic tracking-tighter pl-2 pr-5 leading-15",
+            isLive ? "animate-live-flash" : "bg-primary text-primary-foreground"
           )}>
             LIVE
           </span>

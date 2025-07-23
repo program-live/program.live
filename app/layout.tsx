@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${jetBrainsMono.variable} antialiased text-[10px]/[15px] bg-black text-white`}
+        className={`${jetBrainsMono.variable} antialiased text-10 leading-15 bg-background text-foreground`}
       >
         <ConvexClientProvider>
           {children}

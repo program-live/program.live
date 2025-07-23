@@ -13,16 +13,16 @@ export function FearGreedIndex({ data }: { data: FearGreedIndexData | null }) {
   const getTextColor = () => {
     switch (level.color) {
       case "red":
-        return "text-[#FF0066]"
+        return "text-destructive"
       case "green": 
-        return "text-[#8dd324]"
+        return "text-success"
       default:
         return "text-neutral-300"
     }
   }
 
   return (
-    <div className="relative flex justify-between items-baseline w-full h-[15px] gap-[2px]">
+    <div className="relative flex justify-between items-baseline w-full h-15 gap-2">
       <p className="whitespace-nowrap">FEAR/GREED</p>
 
       <span className="w-full border-b border-dotted" />
@@ -36,13 +36,13 @@ export function FearGreedIndex({ data }: { data: FearGreedIndexData | null }) {
         </div>
 
         {/* Meter */}
-        <div className="relative flex items-center justify-center w-[29px] h-[15px]">
+        <div className="relative flex items-center justify-center w-[29px] h-15">
           {/* Arc */}
-          <div className="absolute h-[10px] border-l border-r border-t border-dotted border-white rounded-t-full w-[20px] bg-black"></div>
+          <div className="absolute h-10 border-l border-r border-t border-dotted rounded-t-full w-20"></div>
           
           {/* Needle Arm */}
           <div
-            className="absolute w-[1px] h-[6px] bottom-1 bg-white transition-transform duration-1000 rounded-full"
+            className="absolute w-1 h-6 bottom-4 bg-foreground transition-transform duration-1000 rounded-full"
             style={{
               transform: `rotate(${needleRotation}deg)`,
               transformOrigin: "bottom center",
@@ -50,7 +50,7 @@ export function FearGreedIndex({ data }: { data: FearGreedIndexData | null }) {
           />
 
           {/* Needle Dot */}
-          <div className="absolute bottom-[3px] w-0.5 h-0.5 bg-white rounded-full" />
+          <div className="absolute bottom-3 w-2 h-2 bg-foreground rounded-full" />
         </div>
       </div>
     </div>
