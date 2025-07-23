@@ -23,6 +23,11 @@ export interface WeatherDay {
   condition: string;
 }
 
+const TORONTO_COORDINATES = {
+  latitude: 43.6532,
+  longitude: -79.3832,
+};
+
 // Fallback weather data (same as current placeholder)
 const fallbackWeatherData: WeatherDay[] = [
   { day: "SUN", temp: 24, condition: "⛅" },
@@ -36,7 +41,6 @@ const fallbackWeatherData: WeatherDay[] = [
 
 // Map WMO weather codes to emoji conditions
 function getWeatherCondition(code: number): string {
-  // WMO Weather interpretation codes
   if (code === 0) return "☀️"; // Clear sky
   if (code >= 1 && code <= 3) return "🌤️"; // Mainly clear, partly cloudy, and overcast
   if (code === 45 || code === 48) return "☁️"; // Fog and depositing rime fog
@@ -55,26 +59,20 @@ function getWeatherCondition(code: number): string {
   if (code === 95) return "⛈️"; // Thunderstorm: Slight or moderate
   if (code === 96 || code === 99) return "⛈️"; // Thunderstorm with slight and heavy hail
   
-  return "⛅"; // Default
+  return "⛅";
 }
 
-// Get day abbreviation from date string
 function getDayAbbreviation(dateString: string): string {
-  // Parse the date string and create a date in the local timezone
   const date = new Date(dateString + 'T12:00:00');
   const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
   return days[date.getDay()];
 }
 
 // Fetch weather data from Open-Meteo
-async function fetchWeatherData(): Promise<WeatherDay[]> {
+async function fetchSevenDayForecastData(): Promise<WeatherDay[]> {
   try {
-    // Toronto coordinates
-    const latitude = 43.6532;
-    const longitude = -79.3832;
-    
     const response = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=temperature_2m_max,weather_code&timezone=America/Toronto&forecast_days=7`,
+      `https://api.open-meteo.com/v1/forecast?latitude=${TORONTO_COORDINATES.latitude}&longitude=${TORONTO_COORDINATES.longitude}&daily=temperature_2m_max,weather_code&timezone=America/Toronto&forecast_days=7`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -89,7 +87,7 @@ async function fetchWeatherData(): Promise<WeatherDay[]> {
     const data: OpenMeteoResponse = await response.json();
     
     // Transform the data to match our WeatherDay interface
-    const forecast: WeatherDay[] = data.daily.time.map((dateString, index) => {
+    const sevenDayForecast: WeatherDay[] = data.daily.time.map((dateString, index) => {
       const maxTemp = data.daily.temperature_2m_max[index];
       const weatherCode = data.daily.weather_code[index];
       
@@ -103,16 +101,15 @@ async function fetchWeatherData(): Promise<WeatherDay[]> {
       };
     });
     
-    return forecast;
+    return sevenDayForecast;
   } catch (error) {
     console.error('Error fetching weather data:', error);
     return fallbackWeatherData;
   }
 }
 
-// Cached weather data function with 10-minute revalidation (more frequent since it's free)
 export const getWeatherData = unstable_cache(
-  fetchWeatherData,
+  fetchSevenDayForecastData,
   ['weather-data'],
   {
     revalidate: 900, // 15 minutes in seconds
