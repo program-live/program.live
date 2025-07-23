@@ -1,13 +1,9 @@
 "use client";
 
 import { StockData } from '@/lib/markets/tickers';
-import ScrollingText from './scrolling-text';
+import ScrollingText from '@/components/scrolling-text';
 
-interface StockTickersProps {
-  data: StockData;
-}
-
-export default function StockTickers({ data }: StockTickersProps) {
+export default function StockTickers({ data }: { data: StockData }) {
   const { topTechStocks, otherStocksUp, otherStocksDown } = data;
 
   return (
