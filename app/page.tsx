@@ -1,13 +1,13 @@
-import Header from "@/components/header";
+import Header from "@/components/header/index";
 import Weather from "@/components/weather";
-import Timezones from "@/components/timezones";
+import Timezones from "@/components/timezones/index";
 import Markets from "@/components/markets";
 import Diagnostics from "@/components/diagnostics";
-import VideoSection from "@/components/video-section";
-import HackerNewsStories from "@/components/hacker-news-stories";
+import BreakingNews from "@/components/breaking-news";
 import OpenSource from "@/components/open-source";
 import Footer from "@/components/footer";
 import SectionHeader from "@/components/section-header";
+import StreamSection from "@/components/stream-section";
 
 export default function Home() {
   return (
@@ -18,7 +18,7 @@ export default function Home() {
         {/* Video */}
         <div className="relative col-span-full xl:col-span-8 xl:order-2">
           <Header className="hidden xl:block col-span-full" />
-          <VideoSection className="xl:overflow-y-auto xl:h-[calc(100vh-45px-45px)]" />
+          <StreamSection />
         </div>
 
         {/* Weather, Timezones, Markets, Open Source */}
@@ -46,7 +46,7 @@ export default function Home() {
         <div className="col-span-full xs:col-span-6 md:col-span-9 xl:col-span-2 flex flex-col justify-between xl:overflow-y-auto xs:h-[495px] xl:h-[calc(100vh-45px)] xs:order-2 xl:order-3 scrollable-section" data-scrollable="true">
           <div className="h-[166px] xs:h-auto overflow-y-auto mb-[15px] scrollable-section" data-scrollable="true">
             <SectionHeader title="Breaking News" />
-            <HackerNewsStories />
+            <BreakingNews />
           </div>
           <Diagnostics className="xl:hidden" />
         </div>

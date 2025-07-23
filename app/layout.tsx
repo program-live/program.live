@@ -10,7 +10,7 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PROGRAM.LIVE - BROADCAST NETWORK",
+  title: "PROGRAM.LIVE",
   description: "Live broadcasting to the world",
 };
 
