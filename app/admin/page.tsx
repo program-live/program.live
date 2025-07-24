@@ -5,21 +5,160 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
+import { Trash2, Edit, Plus } from "lucide-react"
 import { useQuery, useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
 import { TriangleRightIcon } from "@radix-ui/react-icons"
 
+function SponsorForm({ sponsor = null, onSave, onCancel }: { 
+  sponsor?: any, 
+  onSave: () => void, 
+  onCancel: () => void 
+}) {
+  const [formData, setFormData] = useState({
+    name: sponsor?.name || "",
+    logoUrl: sponsor?.logoUrl || "",
+    linkUrl: sponsor?.linkUrl || "",
+    displayText: sponsor?.displayText || "",
+    displayOrder: sponsor?.displayOrder || 1,
+    isActive: sponsor?.isActive ?? true,
+    paddingClass: sponsor?.paddingClass || "px-[30px]"
+  })
+  
+  const createSponsor = useMutation(api.sponsors.createSponsor)
+  const updateSponsor = useMutation(api.sponsors.updateSponsor)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    
+    try {
+      if (sponsor) {
+        await updateSponsor({
+          id: sponsor._id,
+          ...formData
+        })
+      } else {
+        await createSponsor(formData)
+      }
+      onSave()
+    } catch (error) {
+      console.error("Failed to save sponsor:", error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-15">
+      <h1 className="text-15 font-extrabold">{sponsor ? "Edit Sponsor" : "Add New Sponsor"}</h1>
+      <form onSubmit={handleSubmit} className="space-y-10">
+        <div>
+          <Label htmlFor="name">Sponsor Name<span className="text-destructive align-super">*</span></Label>
+          <Input
+            id="name"
+            value={formData.name}
+            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+            required
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="linkUrl">Link URL<span className="text-destructive align-super">*</span></Label>
+          <Input
+            id="linkUrl"
+            type="url"
+            value={formData.linkUrl}
+            onChange={(e) => setFormData(prev => ({ ...prev, linkUrl: e.target.value }))}
+            required
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="logoUrl">Logo URL (optional)</Label>
+          <Input
+            id="logoUrl"
+            type="url"
+            value={formData.logoUrl}
+            onChange={(e) => setFormData(prev => ({ ...prev, logoUrl: e.target.value }))}
+            placeholder="Leave empty to use display text"
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="displayText">Display Text (if no logo)</Label>
+          <Input
+            id="displayText"
+            value={formData.displayText}
+            onChange={(e) => setFormData(prev => ({ ...prev, displayText: e.target.value }))}
+            placeholder="Text to show if no logo provided"
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="displayOrder">Display Order</Label>
+          <Input
+            id="displayOrder"
+            type="number"
+            min="1"
+            value={formData.displayOrder}
+            onChange={(e) => setFormData(prev => ({ ...prev, displayOrder: parseInt(e.target.value) }))}
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="paddingClass">Padding Class</Label>
+          <Input
+            id="paddingClass"
+            value={formData.paddingClass}
+            onChange={(e) => setFormData(prev => ({ ...prev, paddingClass: e.target.value }))}
+            placeholder="e.g., px-[30px] or px-[15px] sm:px-[30px]"
+          />
+        </div>
+        
+        <div className="flex items-center space-x-5 py-10">
+          <Switch
+            id="isActive"
+            checked={formData.isActive}
+            onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
+          />
+          <Label htmlFor="isActive">Active</Label>
+        </div>
+        
+        <div className="flex space-x-5">
+          <Button type="submit" disabled={isSubmitting} className="w-full">
+            {isSubmitting ? "Saving..." : (sponsor ? "Update" : "Create")}
+          </Button>
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
 function AdminDashboard() {
   const currentStatus = useQuery(api.streamStatus.getCurrentStatus)
   const currentStreamInfo = useQuery(api.streamInfo.getCurrentInfo)
+  const sponsors = useQuery(api.sponsors.getAllSponsors)
+  
   const updateStatus = useMutation(api.streamStatus.updateStatus)
   const updateStreamInfo = useMutation(api.streamInfo.updateInfo)
   const clearStreamInfo = useMutation(api.streamInfo.clearInfo)
+  const toggleSponsorStatus = useMutation(api.sponsors.toggleSponsorStatus)
+  const deleteSponsor = useMutation(api.sponsors.deleteSponsor)
+  
   const [isToggling, setIsToggling] = useState(false)
   const [isUpdatingInfo, setIsUpdatingInfo] = useState(false)
   const [streamTitle, setStreamTitle] = useState("")
-  const [streamDescription, setStreamDescription] = useState("")
+  const [streamDescription, setStreamDescription] = useState("")  
+  const [editingSponsor, setEditingSponsor] = useState<any>(null)
+  const [showAddForm, setShowAddForm] = useState(false)
 
   const handleStatusToggle = async (isLive: boolean) => {
     setIsToggling(true)
@@ -61,10 +200,47 @@ function AdminDashboard() {
     }
   }
 
-  if (currentStatus === undefined || currentStreamInfo === undefined) {
+  const handleToggleSponsor = async (sponsorId: string, isActive: boolean) => {
+    try {
+      await toggleSponsorStatus({ id: sponsorId as any, isActive })
+    } catch (error) {
+      console.error("Failed to toggle sponsor status:", error)
+    }
+  }
+
+  const handleDeleteSponsor = async (sponsorId: string) => {
+    if (confirm("Are you sure you want to delete this sponsor?")) {
+      try {
+        await deleteSponsor({ id: sponsorId as any })
+      } catch (error) {
+        console.error("Failed to delete sponsor:", error)
+      }
+    }
+  }
+
+  const handleFormSave = () => {
+    setEditingSponsor(null)
+    setShowAddForm(false)
+  }
+
+  if (currentStatus === undefined || currentStreamInfo === undefined || sponsors === undefined) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <p className="text-foreground">Loading...</p>
+      </div>
+    )
+  }
+
+  if (editingSponsor || showAddForm) {
+    return (
+      <div className="min-h-screen bg-custom-dark-gray p-15">
+        <div className="max-w-lg mx-auto">
+          <SponsorForm
+            sponsor={editingSponsor}
+            onSave={handleFormSave}
+            onCancel={handleFormSave}
+          />
+        </div>
       </div>
     )
   }
@@ -159,21 +335,84 @@ function AdminDashboard() {
               <tr>
                 <td className="pr-10 flex-1">Title:{"\u0020"}</td>
                 <td className="pr-10 flex-1">
-                  {currentStreamInfo.title || "—"}
+                  {currentStreamInfo?.title || "—"}
                 </td>
               </tr>
               <tr>
                 <td className="pr-10 flex-1">Description:{"\u0020"}</td>
                 <td className="pr-10 flex-1">
-                  {currentStreamInfo.description || "—"}
+                  {currentStreamInfo?.description || "—"}
                 </td>
               </tr>
               <tr>
                 <td className="pr-10 flex-1">Last updated:{"\u0020"}</td>
-                <td className="pr-10 flex-1">{new Date(currentStreamInfo.timestamp).toLocaleString().replace(',', '')}</td>
+                <td className="pr-10 flex-1">
+                  {currentStreamInfo?.timestamp 
+                    ? new Date(currentStreamInfo?.timestamp).toLocaleString().replace(',', '')
+                    : "—"
+                  }
+                </td>
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <div className="flex flex-col gap-15 border-l pl-15">
+          <div>
+            <h2>Sponsor Management</h2>
+            <p className="text-muted-foreground">Manage sponsors that appear on the homepage</p>
+          </div>
+          <Button onClick={() => setShowAddForm(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Sponsor
+          </Button>
+          <div>
+            {sponsors.length === 0 ? (
+              <p className="text-gray-400">No sponsors yet. Add your first sponsor!</p>
+            ) : (
+              <div className="space-y-4">
+                {sponsors.map((sponsor) => (
+                  <div key={sponsor._id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-3">
+                        <h3 className="font-medium">{sponsor.name}</h3>
+                        <Badge variant={sponsor.isActive ? "default" : "secondary"}>
+                          {sponsor.isActive ? "Active" : "Inactive"}
+                        </Badge>
+                        <Badge variant="outline">Order: {sponsor.displayOrder}</Badge>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {sponsor.linkUrl}
+                      </p>
+                      {sponsor.displayText && (
+                        <p className="text-sm text-gray-500">
+                          Display: "{sponsor.displayText}"
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        checked={sponsor.isActive}
+                        onCheckedChange={(checked) => handleToggleSponsor(sponsor._id, checked)}
+                      />
+                      <Button
+                        variant="outline"
+                        onClick={() => setEditingSponsor(sponsor)}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => handleDeleteSponsor(sponsor._id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col gap-5">
@@ -191,7 +430,6 @@ function AdminDashboard() {
           </div>
         </div>
       </div>
-
     </div>
   )
 }
@@ -263,4 +501,4 @@ export default function AdminPage() {
       </div>
     </div>
   )
-} 
+}
