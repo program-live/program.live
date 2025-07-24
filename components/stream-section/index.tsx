@@ -35,7 +35,7 @@ export default function StreamSection() {
             </p>
           </div>
 
-          <div className='flex flex-col xs:flex-row gap-y-5 gap-x-2'>
+          <div className='flex flex-col xs:flex-row gap-y-5 gap-x-1'>
             <Button className='w-full' asChild>
               <Link href="https://www.youtube.com/@PROGRAMISLIVE">
                 <span className="sr-only">Subscribe to live feed</span>

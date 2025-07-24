@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Trash2, Edit, Plus } from "lucide-react"
+import { Trash2, Edit, Plus, ArrowLeft } from "lucide-react"
 import { useQuery, useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
 import { cn } from "@/lib/utils"
@@ -55,7 +55,12 @@ function SponsorForm({ sponsor = null, onSave, onCancel }: {
 
   return (
     <div className="flex flex-col gap-15">
-      <h1 className="text-15 font-extrabold">{sponsor ? "Edit Sponsor" : "Add New Sponsor"}</h1>
+      <div className="relative flex items-center gap-10">
+        <Button variant="ghost" size="icon" onClick={onCancel}>
+          <ArrowLeft className="w-25 h-25" />
+        </Button>
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-15 font-extrabold">{sponsor ? "Edit Sponsor" : "Add New Sponsor"}</h1>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-10">
         <div>
           <Label htmlFor="name">Sponsor Name<span className="text-destructive align-super">*</span></Label>
@@ -120,7 +125,7 @@ function SponsorForm({ sponsor = null, onSave, onCancel }: {
           />
         </div>
         
-        <div className="flex items-center space-x-5 py-10">
+        <div className="flex items-center space-x-10 py-10">
           <Switch
             id="isActive"
             checked={formData.isActive}
@@ -129,14 +134,9 @@ function SponsorForm({ sponsor = null, onSave, onCancel }: {
           <Label htmlFor="isActive">Active</Label>
         </div>
         
-        <div className="flex space-x-5">
-          <Button type="submit" disabled={isSubmitting} className="w-full">
-            {isSubmitting ? "Saving..." : (sponsor ? "Update" : "Create")}
-          </Button>
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-        </div>
+        <Button type="submit" disabled={isSubmitting} className="w-full">
+          {isSubmitting ? "Saving..." : (sponsor ? "Update" : "Create")}
+        </Button>
       </form>
     </div>
   )
@@ -358,55 +358,62 @@ function AdminDashboard() {
         </div>
 
         <div className="flex flex-col gap-15 border-l pl-15">
-          <div>
-            <h2>Sponsor Management</h2>
-            <p className="text-muted-foreground">Manage sponsors that appear on the homepage</p>
+          <div className="flex justify-between gap-15">
+            <div>
+              <h2>Sponsors</h2>
+            </div>
+            <Button onClick={() => setShowAddForm(true)}>
+              <Plus className="w-4 h-4" />
+            </Button>
           </div>
-          <Button onClick={() => setShowAddForm(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            Add Sponsor
-          </Button>
           <div>
             {sponsors.length === 0 ? (
-              <p className="text-gray-400">No sponsors yet. Add your first sponsor!</p>
+              <p className="text-muted-foreground">No sponsors yet. Add your first sponsor!</p>
             ) : (
-              <div className="space-y-4">
-                {sponsors.map((sponsor) => (
-                  <div key={sponsor._id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3">
-                        <h3 className="font-medium">{sponsor.name}</h3>
-                        <Badge variant={sponsor.isActive ? "default" : "secondary"}>
-                          {sponsor.isActive ? "Active" : "Inactive"}
-                        </Badge>
-                        <Badge variant="outline">Order: {sponsor.displayOrder}</Badge>
-                      </div>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {sponsor.linkUrl}
-                      </p>
-                      {sponsor.displayText && (
-                        <p className="text-sm text-gray-500">
-                          Display: "{sponsor.displayText}"
+              <div className="space-y-15">
+                {sponsors.sort((a, b) => a.displayOrder - b.displayOrder).map((sponsor, i) => (
+                  <div key={sponsor._id} className="flex gap-15">
+                    <p>{i + 1}.</p>
+                    <div className="flex justify-between gap-15 w-full">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-3">
+                          <h3 className="font-medium">{sponsor.name}</h3>
+                          <Badge variant={sponsor.isActive ? "default" : "outline"}>
+                            {sponsor.isActive ? "Active" : "Inactive"}
+                          </Badge>
+                          <Badge variant="outline">Order: {sponsor.displayOrder}</Badge>
+                        </div>
+                        <p className="text-muted-foreground">
+                          {sponsor.linkUrl}
                         </p>
-                      )}
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Switch
-                        checked={sponsor.isActive}
-                        onCheckedChange={(checked) => handleToggleSponsor(sponsor._id, checked)}
-                      />
-                      <Button
-                        variant="outline"
-                        onClick={() => setEditingSponsor(sponsor)}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={() => handleDeleteSponsor(sponsor._id)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                        {sponsor.displayText && (
+                          <p className="text-muted-foreground">
+                            Display: "{sponsor.displayText}"
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex space-x-15">
+                        <div className="flex space-x-5">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDeleteSponsor(sponsor._id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setEditingSponsor(sponsor)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                        </div>
+                        <Switch
+                          checked={sponsor.isActive}
+                          onCheckedChange={(checked) => handleToggleSponsor(sponsor._id, checked)}
+                        />
+                      </div>
                     </div>
                   </div>
                 ))}

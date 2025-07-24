@@ -2,7 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import WarpEffect from "./warp-effect";
+import WarpEffect from "@/components/warp-effect";
+import { cn } from "@/lib/utils";
 
 // Common WarpEffect props
 const WARP_EFFECT_PROPS = {
@@ -14,10 +15,13 @@ const WARP_EFFECT_PROPS = {
   className: "border-r border-b border-dotted "
 };
 
+const FALLBACK_SPONSOR_NAME = "Buy Spot";
+
 // Fallback sponsor for empty slots (directs to buy spot)
 const FALLBACK_SPONSOR = {
-  _id: "fallback",
-  name: "Buy Spot",
+  _id: "fallback" as any,
+  _creationTime: 0,
+  name: FALLBACK_SPONSOR_NAME,
   linkUrl: "https://app.market.dev/checkout/cmdg4lrpa0001l10acbshoc4k",
   displayText: "BUY SPOT",
   paddingClass: "px-[30px]",
@@ -53,7 +57,7 @@ export default function Sponsors() {
   // Fill empty spots with fallback sponsors to always show 4 slots
   const displaySponsors = [...sponsors];
   while (displaySponsors.length < 4) {
-    displaySponsors.push({ ...FALLBACK_SPONSOR, _id: `fallback-${displaySponsors.length}` });
+    displaySponsors.push({ ...FALLBACK_SPONSOR, _id: `fallback-${displaySponsors.length}` as any });
   }
 
   // Only show first 4 sponsors
@@ -83,7 +87,10 @@ export default function Sponsors() {
                   priority={index === 0} // Only prioritize first image
                 />
               ) : (
-                <span className="group-hover:opacity-70" aria-hidden>
+                <span 
+                  className={cn(sponsor.name !== FALLBACK_SPONSOR_NAME && "group-hover:opacity-70 text-15 font-extrabold")} 
+                  aria-hidden
+                >
                   {sponsor.displayText || sponsor.name}
                 </span>
               )}
