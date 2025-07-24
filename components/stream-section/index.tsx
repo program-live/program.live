@@ -1,9 +1,16 @@
+'use client'
+
 import Link from 'next/link'
 import Sponsors from '@/components/stream-section/sponsors'
 import Video from '@/components/stream-section/video'
 import { TriangleRightIcon } from '@radix-ui/react-icons'
+import { useQuery } from "convex/react"
+import { api } from "@/convex/_generated/api"
+import { Button } from '../ui/button'
 
 export default function StreamSection() {
+  const currentStreamInfo = useQuery(api.streamInfo.getCurrentInfo)
+
   return (
     <div className="flex-1 h-full flex flex-col pb-15 xl:pb-0 xl:overflow-y-auto xl:h-[calc(var(--main-content-height)-45px)]">
       <Video />
@@ -11,20 +18,41 @@ export default function StreamSection() {
       <div className="flex flex-col justify-between gap-15 h-full">
         <div className="flex flex-col gap-10">
           <div>
-            <h2 className="text-15 leading-20">PROGRAM 09: MEDIAPIPE</h2>
+            <h2 className="text-15 leading-20">{
+              currentStreamInfo?.title || (
+                <>
+                  <span className='sr-only'>Next Program Coming Soon...</span>
+                  <span aria-hidden>NEXT PR0GRAM: C0MING S00N...</span>
+                </>
+              )}</h2>
             <p className="text-pretty">
-              Creative technologist Ben Lapalan leads a hands-on MediaPipe workshop covering face detection, gesture recognition, image segmentation, and more. Build during open creator time, then project demos.
+              {currentStreamInfo?.description || (
+                <>
+                  <span aria-hidden>PR0GRAM: A w0rksh0p series expl0ring new s0ftware by building. Subscribe t0 the channel t0 know when we're streaming. Follow the Luma page t0 join in-pers0n.</span>
+                  <span className='sr-only'>PROGRAM: A workshop series exploring new software by building. Subscribe to the channel to know when we're streaming and follow the Luma page to join the event in-person.</span>
+                </>
+              )}
             </p>
           </div>
 
-          <Link 
-            href="https://www.youtube.com/@PROGRAMISLIVE" 
-            className="inline-flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-foreground hover:text-primary text-primary-foreground hover:border font-extrabold h-15"
-          >
-            <span className="sr-only">Subscribe to live feed</span>
-            <span aria-hidden>SUBSCRIBE T0 LIVE FEED</span>
-            <TriangleRightIcon className="size-12" />
-          </Link>
+          <div className='flex flex-col xs:flex-row gap-y-5 gap-x-2'>
+            <Button className='w-full' asChild>
+              <Link href="https://www.youtube.com/@PROGRAMISLIVE">
+                <span className="sr-only">Subscribe to live feed</span>
+                <span className='text-[12px] leading-10 mb-1 mr-5'>⏵</span>
+                {"\u0020"}
+                <span aria-hidden>SUBSCRIBE T0 LIVE FEED</span>
+              </Link>
+            </Button>
+            <Button className='w-full' asChild>
+              <Link href="https://lu.ma/program?k=c&period=past">
+                <span className="sr-only">Get in person tickets</span>
+                <span className='text-15 leading-10 mb-3 mr-4'>✦</span>
+                {"\u0020"}
+                <span aria-hidden>GET IN-PERS0N TICKETS</span>
+              </Link>
+            </Button>
+          </div>
         </div>
 
         <Sponsors />
