@@ -13,6 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as streamInfo from "../streamInfo.js";
 import type * as streamStatus from "../streamStatus.js";
 
 /**
@@ -24,6 +25,7 @@ import type * as streamStatus from "../streamStatus.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  streamInfo: typeof streamInfo;
   streamStatus: typeof streamStatus;
 }>;
 export declare const api: FilterApi<
