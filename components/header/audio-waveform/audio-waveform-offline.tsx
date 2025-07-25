@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 
 interface AudioWaveformOfflineProps {
+  isLoading?: boolean;
   className?: string;
 }
 
-export default function AudioWaveformOffline({ className }: AudioWaveformOfflineProps) {
+export default function AudioWaveformOffline({ isLoading = false, className }: AudioWaveformOfflineProps) {
   const [tappingIndex, setTappingIndex] = useState(0);
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export default function AudioWaveformOffline({ className }: AudioWaveformOffline
         <div
           key={i}
           className={`w-1 transition-all duration-150 ease-out bg-primary/60 ${
-            i === tappingIndex ? 'h-4' : 'h-1'
+            (i === tappingIndex && !isLoading) ? 'h-4' : 'h-1'
           }`}
         />
       ))}

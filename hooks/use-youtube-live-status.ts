@@ -9,6 +9,7 @@ export function useYouTubeLiveStatus() {
   
   return {
     isLive: streamData?.isLive || false,
-    startedAt: streamData?.startedAt || null
+    startedAt: streamData?.startedAt || null,
+    isLoading: streamData === undefined
   };
 } 

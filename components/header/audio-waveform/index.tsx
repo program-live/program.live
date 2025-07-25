@@ -9,7 +9,11 @@ interface AudioWaveformProps {
 }
 
 export default function AudioWaveform({ className }: AudioWaveformProps) {
-  const { isLive } = useYouTubeLiveStatus();
+  const { isLive, isLoading } = useYouTubeLiveStatus();
+
+  if (isLoading) {
+    return <AudioWaveformOffline className={className} isLoading />;
+  }
 
   if (isLive) {
     return <AudioWaveformLive className={className} />;
