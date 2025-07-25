@@ -2,11 +2,23 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
+  quotes: defineTable({
+    symbol: v.string(),
+    price: v.number(),
+    changePct: v.number(),
+    updated: v.number(),
+    kind: v.union(v.literal('stock'), v.literal('crypto')),
+    isHighlight: v.boolean(), // true = featured individually, false = ticker tape
+  }).index("by_symbol", ["symbol"])
+    .index("by_kind", ["kind"])
+    .index("by_kind_and_highlight", ["kind", "isHighlight"]),
+
   streamStatus: defineTable({
     isLive: v.boolean(),
     timestamp: v.number(), // Unix timestamp when status changed
     startedAt: v.optional(v.number()), // When stream started (if currently live)
   }),
+  
   streamInfo: defineTable({
     title: v.optional(v.string()), // Stream title (can be empty/null for placeholder)
     description: v.optional(v.string()), // Stream description (can be empty/null for placeholder)

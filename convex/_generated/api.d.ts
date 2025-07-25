@@ -13,6 +13,8 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as crons from "../crons.js";
+import type * as quotes from "../quotes.js";
 import type * as sampleSponsors from "../sampleSponsors.js";
 import type * as sponsors from "../sponsors.js";
 import type * as streamInfo from "../streamInfo.js";
@@ -27,6 +29,8 @@ import type * as streamStatus from "../streamStatus.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  crons: typeof crons;
+  quotes: typeof quotes;
   sampleSponsors: typeof sampleSponsors;
   sponsors: typeof sponsors;
   streamInfo: typeof streamInfo;
