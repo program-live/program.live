@@ -37,4 +37,22 @@ export default defineSchema({
     updatedAt: v.number(),
   }).index("by_display_order", ["displayOrder"])
     .index("by_active", ["isActive"]),
+
+  openSourceProjects: defineTable({
+    title: v.string(),
+    stars: v.string(), // Formatted star count (e.g., "1.2k", "5.4M")
+    starCount: v.number(), // Raw star count for sorting
+    url: v.string(),
+    updated: v.number(), // When this data was fetched
+  }).index("by_star_count", ["starCount"])
+    .index("by_updated", ["updated"]),
+
+  weatherData: defineTable({
+    days: v.array(v.object({
+      day: v.string(), // Day abbreviation: "MON", "TUE", etc.
+      temp: v.number(), // Temperature in celsius
+      condition: v.string(), // Weather emoji: "☀️", "🌧️", etc.
+    })),
+    updated: v.number(), // Timestamp of last update
+  }),
 }); 

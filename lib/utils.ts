@@ -24,10 +24,3 @@ export async function fetchJSON(url: string) {
   }
   return res.json();
 }
-
-export function formatStarCount(stars: number): string {
-  if (stars >= 1000) {
-    return `${(stars / 1000).toFixed(1)}k`;
-  }
-  return stars.toString();
-}

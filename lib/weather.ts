@@ -1,4 +1,5 @@
 import { unstable_cache } from 'next/cache';
+import { fetchWithBackoff } from './utils';
 
 // Open-Meteo API types
 interface OpenMeteoResponse {
@@ -71,37 +72,37 @@ function getDayAbbreviation(dateString: string): string {
 // Fetch weather data from Open-Meteo
 async function fetchSevenDayForecastData(): Promise<WeatherDay[]> {
   try {
-    const response = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${TORONTO_COORDINATES.latitude}&longitude=${TORONTO_COORDINATES.longitude}&daily=temperature_2m_max,weather_code&timezone=America/Toronto&forecast_days=7`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    return await fetchWithBackoff(async () => {
+      const response = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${TORONTO_COORDINATES.latitude}&longitude=${TORONTO_COORDINATES.longitude}&daily=temperature_2m_max,weather_code&timezone=America/Toronto&forecast_days=7`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data: OpenMeteoResponse = await response.json();
-    
-    // Transform the data to match our WeatherDay interface
-    const sevenDayForecast: WeatherDay[] = data.daily.time.map((dateString, index) => {
-      const maxTemp = data.daily.temperature_2m_max[index];
-      const weatherCode = data.daily.weather_code[index];
+      const data: OpenMeteoResponse = await response.json();
       
-      // Use maximum temperature for display
-      const temp = Math.round(maxTemp);
-      
-      return {
-        day: getDayAbbreviation(dateString),
-        temp,
-        condition: getWeatherCondition(weatherCode)
-      };
+      // Transform the data to match our WeatherDay interface
+      return data.daily.time.map((dateString, index) => {
+        const maxTemp = data.daily.temperature_2m_max[index];
+        const weatherCode = data.daily.weather_code[index];
+        
+        // Use maximum temperature for display
+        const temp = Math.round(maxTemp);
+        
+        return {
+          day: getDayAbbreviation(dateString),
+          temp,
+          condition: getWeatherCondition(weatherCode)
+        };
+      });
     });
-    
-    return sevenDayForecast;
   } catch (error) {
     console.error('Error fetching weather data:', error);
     return fallbackWeatherData;
