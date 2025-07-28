@@ -17,8 +17,10 @@ export async function fetchWithBackoff<T>(fn: () => Promise<T>, retries = 3, del
   throw new Error("Unreachable: fetchWithBackoff loop should have either returned or thrown.");
 }
 
-export async function fetchJSON(url: string) {
-  const res = await fetch(url);
+export async function fetchJSON(url: string, revalidate: number = 900) {
+  const res = await fetch(url, {
+    next: { revalidate },
+  });
   if (!res.ok) {
     throw new Error(`Failed to fetch ${url}: ${res.status} ${res.statusText}`);
   }
