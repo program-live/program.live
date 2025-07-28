@@ -43,7 +43,7 @@ export default function Sponsors({ sponsors }: { sponsors: Doc<"sponsors">[] }) 
   return (
     <div className="h-full flex items-end">
       <div className="relative grid grid-cols-2 md:grid-cols-4 h-full min-h-[120px] md:min-h-[90px] max-h-[120px] xl:max-h-none border-l border-t border-dotted w-full">
-        <h2 aria-hidden className="absolute text-center -top-5 -left-3 bg-black z-[1] px-2">SP0NSORS</h2>
+        <h2 aria-hidden className="absolute text-center -top-5 -left-3 bg-background z-[1] px-2">SP0NSORS</h2>
         <span className="sr-only">Sponsors</span>
         
         {sponsorsToShow.map((sponsor, index) => (

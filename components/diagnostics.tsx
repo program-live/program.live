@@ -22,8 +22,8 @@ export default function Diagnostics({ className }: { className?: string }) {
     const statuses = isLive ? liveStatuses : offlineStatuses;
   
   return (
-    <div className={cn("relative flex flex-col border-t border-r rounded-tr bg-black xl:sticky bottom-0 pt-10", className)}>
-      <h2 className="font-extrabold whitespace-nowrap uppercase absolute -top-5 -left-2 z-[1] bg-black px-2">Diagnostics</h2>
+    <div className={cn("relative flex flex-col border-t border-r rounded-tr bg-background xl:sticky bottom-0 pt-10", className)}>
+      <h2 className="font-extrabold whitespace-nowrap uppercase absolute -top-5 -left-2 z-[1] bg-background px-2">Diagnostics</h2>
       {statuses.slice(0, 5).map((status, i) => (
         <div key={i} className="flex w-full gap-15">
           <span className="w-full" aria-hidden={!!status.srName}>{status.name}:</span>

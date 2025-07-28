@@ -1232,7 +1232,7 @@ export default function WarpDriveSatelliteEffect() {
       {/* Loading placeholder to prevent layout shift */}
       {!isInitialized && (
         <div 
-          className="absolute inset-0 bg-black"
+          className="absolute inset-0 bg-background"
           style={{
             width: dimensions.width,
             height: dimensions.height,
