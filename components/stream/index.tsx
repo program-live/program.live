@@ -13,44 +13,51 @@ export default async function StreamSection() {
     <div className="flex-1 h-full flex flex-col pb-15 xl:pb-0 xl:overflow-y-auto xl:h-[calc(var(--main-content-height)-45px)]">
       <Video />
       
-      <div className="flex flex-col justify-between gap-15 h-full">
-        <div className="flex flex-col gap-10">
-          <div>
-            <h2 className="text-15 leading-20">{
-              currentStreamInfo?.title || (
-                <>
-                  <span className='sr-only'>Next Program Coming Soon...</span>
-                  <span aria-hidden>NEXT PR0GRAM: C0MING S00N...</span>
-                </>
-              )}</h2>
-            <p className="text-pretty">
-              {currentStreamInfo?.description || (
-                <>
-                  <span aria-hidden>PR0GRAM: A w0rksh0p series expl0ring new s0ftware by building. Subscribe t0 the channel t0 know when we're streaming. Follow the Luma page t0 join in-pers0n.</span>
-                  <span className='sr-only'>PROGRAM: A workshop series exploring new software by building. Subscribe to the channel to know when we're streaming and follow the Luma page to join the event in-person.</span>
-                </>
-              )}
-            </p>
+      <div className="flex flex-col h-full gap-15">
+        <div className='flex flex-col'>
+          <div className="flex flex-col sm:flex-row items-center">
+            <div className='flex items-center py-2.5 w-full'>
+              <h2 className="text-15 leading-20">{
+                currentStreamInfo?.title || (
+                  <>
+                    <span className='sr-only'>Next Program Coming Soon...</span>
+                    <span aria-hidden>NEXT PR0GRAM: C0MING S00N…</span>
+                  </>
+                )}
+              </h2>
+            </div>
+            <div className='flex flex-row items-center sm:flex-row-reverse w-full border-t sm:border-t-0 border-dotted'>
+              <span className='h-10 bg-foreground w-1' />
+              <Button size='lg' variant='outline' className='w-full sm:w-fit h-full min-h-[25px] border-0' asChild>
+                <Link href="https://www.youtube.com/@PROGRAMISLIVE">
+                  <span className="sr-only">Subscribe</span>
+                  <span className='text-[12px] leading-10 mb-1 mr-5'>⏵</span>
+                  {"\u0020"}
+                  <span aria-hidden>SUBSCRIBE</span>
+                </Link>
+              </Button>
+              <span className='h-10 bg-foreground w-1' />
+              <Button size='lg' variant='outline' className='w-full sm:w-fit h-full min-h-[25px] border-0 ' asChild>
+                <Link href="https://lu.ma/program?k=c&period=past">
+                  <span className="sr-only">Join in-person</span>
+                  <span className='text-15 leading-10 mb-3 mr-4'>✦</span>
+                  {"\u0020"}
+                  <span aria-hidden>J0IN IN-PERS0N</span>
+                </Link>
+              </Button>
+              <span className='h-10 bg-foreground w-1' />
+            </div>
+            
           </div>
 
-          <div className='flex flex-col xs:flex-row gap-y-5 gap-x-1'>
-            <Button className='w-full' asChild>
-              <Link href="https://www.youtube.com/@PROGRAMISLIVE">
-                <span className="sr-only">Subscribe to live feed</span>
-                <span className='text-[12px] leading-10 mb-1 mr-5'>⏵</span>
-                {"\u0020"}
-                <span aria-hidden>SUBSCRIBE T0 LIVE FEED</span>
-              </Link>
-            </Button>
-            <Button className='w-full' asChild>
-              <Link href="https://lu.ma/program?k=c&period=past">
-                <span className="sr-only">Join in-person</span>
-                <span className='text-15 leading-10 mb-3 mr-4'>✦</span>
-                {"\u0020"}
-                <span aria-hidden>J0IN IN-PERS0N</span>
-              </Link>
-            </Button>
-          </div>
+          <p className="text-pretty col-span-3 pt-5 border-t lg:border-r border-dotted">
+            {currentStreamInfo?.description || (
+              <>
+                <span aria-hidden>PR0GRAM: A w0rksh0p series expl0ring new s0ftware by building. Subscribe t0 the channel t0 know when we're streaming. Follow the Luma page t0 join in-pers0n.</span>
+                <span className='sr-only'>PROGRAM: A workshop series exploring new software by building. Subscribe to the channel to know when we're streaming and follow the Luma page to join the event in-person.</span>
+              </>
+            )}
+          </p>
         </div>
 
         <Sponsors sponsors={sponsors} />

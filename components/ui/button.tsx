@@ -14,8 +14,8 @@ const buttonVariants = cva(
         ghost: "text-foreground border-transparent hover:border-border",
       },
       size: {
-        default: "h-15 px-15",
-        lg: "h-20 px-20",
+        default: "h-15 px-10",
+        lg: "h-25 px-10",
         icon: "h-15 w-15 p-0",
       },
     },
