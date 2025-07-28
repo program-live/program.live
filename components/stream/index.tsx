@@ -15,7 +15,8 @@ export default async function StreamSection() {
       
       <div className="flex flex-col h-full gap-15">
         <div className='flex flex-col'>
-          <div className="flex flex-col sm:flex-row items-center">
+          
+          <div className="flex flex-col gap-x-15 sm:flex-row items-center">
             <div className='flex items-center py-2.5 w-full'>
               <h2 className="text-15 leading-20">{
                 currentStreamInfo?.title || (
@@ -26,8 +27,10 @@ export default async function StreamSection() {
                 )}
               </h2>
             </div>
+
             <div className='flex flex-row items-center sm:flex-row-reverse w-full border-t sm:border-t-0 border-dotted'>
               <span className='h-10 bg-foreground w-1' />
+
               <Button size='lg' variant='outline' className='w-full sm:w-fit h-full min-h-[25px] border-0' asChild>
                 <Link href="https://www.youtube.com/@PROGRAMISLIVE">
                   <span className="sr-only">Subscribe</span>
@@ -36,7 +39,9 @@ export default async function StreamSection() {
                   <span aria-hidden>SUBSCRIBE</span>
                 </Link>
               </Button>
+
               <span className='h-10 bg-foreground w-1' />
+
               <Button size='lg' variant='outline' className='w-full sm:w-fit h-full min-h-[25px] border-0 ' asChild>
                 <Link href="https://lu.ma/program?k=c&period=past">
                   <span className="sr-only">Join in-person</span>
@@ -45,12 +50,12 @@ export default async function StreamSection() {
                   <span aria-hidden>J0IN IN-PERS0N</span>
                 </Link>
               </Button>
+              
               <span className='h-10 bg-foreground w-1' />
             </div>
-            
           </div>
 
-          <p className="text-pretty col-span-3 pt-5 border-t lg:border-r border-dotted">
+          <p className="text-pretty col-span-3 pt-5 border-t lg:border-r border-dotted pr-5 rounded-tr-sm">
             {currentStreamInfo?.description || (
               <>
                 <span aria-hidden>PR0GRAM: A w0rksh0p series expl0ring new s0ftware by building. Subscribe t0 the channel t0 know when we're streaming. Follow the Luma page t0 join in-pers0n.</span>
