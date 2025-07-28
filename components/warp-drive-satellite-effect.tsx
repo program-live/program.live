@@ -53,8 +53,7 @@ export default function WarpDriveSatelliteEffect() {
     mouseDown: false,
     mousePos: { x: 0, y: 0 } as MousePos,
     center: { x: 0, y: 0 },
-    rotationSpeed: -1.0,
-    rotationSpeedFactor: { x: 0, y: 0 },
+    // rotationSpeed & rotationSpeedFactor were unused – removed to simplify state
     fov: 300,
     fovMin: 210,
     fovMax: 300,
@@ -178,8 +177,7 @@ export default function WarpDriveSatelliteEffect() {
     state.ctx = ctx
     state.center = { x: dimensions.width / 2, y: dimensions.height / 2 }
     state.mousePos = { x: state.center.x, y: state.center.y }
-    state.rotationSpeedFactor.x = state.rotationSpeed / state.center.x
-    state.rotationSpeedFactor.y = state.rotationSpeed / state.center.y
+    // rotationSpeedFactor removed – no longer needed
 
     // Initialize image data
     state.imageData = ctx.getImageData(0, 0, dimensions.width, dimensions.height)
@@ -615,16 +613,10 @@ export default function WarpDriveSatelliteEffect() {
     }
   }, [dimensions, isInitialized])
 
+  // Faster zero-fill since background is transparent black
   const clearImageData = useCallback(() => {
-    const state = stateRef.current
-    if (!state.pix) return
-
-    for (let i = 0, l = state.pix.length; i < l; i += 4) {
-      state.pix[i] = state.backgroundColor.r
-      state.pix[i + 1] = state.backgroundColor.g
-      state.pix[i + 2] = state.backgroundColor.b
-      state.pix[i + 3] = state.backgroundColor.a
-    }
+    const { pix } = stateRef.current
+    if (pix) pix.fill(0)
   }, [])
 
   const setPixel = useCallback((x: number, y: number, r: number, g: number, b: number, a: number) => {
