@@ -1,9 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import WarpEffect from "@/components/warp-effect";
 import { cn } from "@/lib/utils";
+import { Doc } from "@/convex/_generated/dataModel";
 
 // Common WarpEffect props
 const WARP_EFFECT_PROPS = {
@@ -18,42 +17,20 @@ const WARP_EFFECT_PROPS = {
 const FALLBACK_SPONSOR_NAME = "Buy Spot";
 
 // Fallback sponsor for empty slots (directs to buy spot)
-const FALLBACK_SPONSOR = {
+const FALLBACK_SPONSOR: Doc<"sponsors"> = {
   _id: "fallback" as any,
   _creationTime: 0,
   name: FALLBACK_SPONSOR_NAME,
   linkUrl: "https://app.market.dev/checkout/cmdg4lrpa0001l10acbshoc4k",
   displayText: "BUY SPOT",
-  paddingClass: "px-[30px]",
+  paddingClass: "px-30",
   isActive: true,
   displayOrder: 999,
   createdAt: 0,
   updatedAt: 0
 };
 
-export default function Sponsors() {
-  const sponsors = useQuery(api.sponsors.getActiveSponsors);
-
-  // Show loading state
-  if (sponsors === undefined) {
-    return (
-      <div className="h-full flex items-end">
-        <div className="relative grid grid-cols-2 md:grid-cols-4 h-full min-h-[120px] md:min-h-[90px] max-h-[120px] xl:max-h-none border-l border-t border-dotted w-full">
-          <h2 aria-hidden className="absolute text-center -top-[5px] -left-[3px] bg-black z-[1px] px-0.5">SP0NSORS</h2>
-          <span className="sr-only">Sponsors</span>
-          {/* Loading placeholders */}
-          {Array.from({ length: 4 }).map((_, index) => (
-            <WarpEffect key={index} {...WARP_EFFECT_PROPS}>
-              <div className="flex items-center justify-center px-[30px] w-full h-full">
-                <span className="opacity-50">Loading...</span>
-              </div>
-            </WarpEffect>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
+export default function Sponsors({ sponsors }: { sponsors: Doc<"sponsors">[] }) {
   // Fill empty spots with fallback sponsors to always show 4 slots
   const displaySponsors = [...sponsors];
   while (displaySponsors.length < 4) {

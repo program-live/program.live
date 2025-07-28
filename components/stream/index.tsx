@@ -1,15 +1,13 @@
-'use client'
-
 import Link from 'next/link'
-import Sponsors from '@/components/stream-section/sponsors'
-import Video from '@/components/stream-section/video'
-import { TriangleRightIcon } from '@radix-ui/react-icons'
-import { useQuery } from "convex/react"
+import Sponsors from '@/components/stream/sponsors'
+import Video from '@/components/stream/video'
+import { fetchQuery } from "convex/nextjs"
 import { api } from "@/convex/_generated/api"
 import { Button } from '../ui/button'
 
-export default function StreamSection() {
-  const currentStreamInfo = useQuery(api.streamInfo.getCurrentInfo)
+export default async function StreamSection() {
+  const currentStreamInfo = await fetchQuery(api.streamInfo.getCurrentInfo)
+  const sponsors = await fetchQuery(api.sponsors.getActiveSponsors)
 
   return (
     <div className="flex-1 h-full flex flex-col pb-15 xl:pb-0 xl:overflow-y-auto xl:h-[calc(var(--main-content-height)-45px)]">
@@ -46,16 +44,16 @@ export default function StreamSection() {
             </Button>
             <Button className='w-full' asChild>
               <Link href="https://lu.ma/program?k=c&period=past">
-                <span className="sr-only">Get in person tickets</span>
+                <span className="sr-only">Join in-person</span>
                 <span className='text-15 leading-10 mb-3 mr-4'>✦</span>
                 {"\u0020"}
-                <span aria-hidden>GET IN-PERS0N TICKETS</span>
+                <span aria-hidden>J0IN IN-PERS0N</span>
               </Link>
             </Button>
           </div>
         </div>
 
-        <Sponsors />
+        <Sponsors sponsors={sponsors} />
       </div>
     </div>
   )
