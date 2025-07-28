@@ -1,6 +1,6 @@
 import { internalAction, internalMutation, query } from './_generated/server';
 import { internal } from './_generated/api';
-import { getQuotes } from '../lib/markets/finnhub';
+import { getQuotes } from '../lib/finnhub';
 import { v } from 'convex/values';
 
 // Internal action that fetches from API and calls mutation

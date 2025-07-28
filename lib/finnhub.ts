@@ -1,6 +1,6 @@
 // API for stock and crypto data
 
-import { fetchJSON } from '../utils';
+import { fetchJSON } from './utils';
 
 // HIGHLIGHTS: Always shown individually (5 stocks + 5 crypto)
 export const STOCK_HIGHLIGHTS = ['NVDA', 'GOOGL', 'MSFT', 'AMZN', 'META'];
