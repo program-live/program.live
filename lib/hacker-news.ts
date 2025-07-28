@@ -23,7 +23,7 @@ export async function getHackerNewsStories(limit: number = 20): Promise<HNStoryI
     return await fetchWithBackoff(async () => {
       const topStoriesResponse = await fetch(
         `${HN_API_URL}/topstories.json`,
-        { next: { revalidate: 900 } } // Revalidate every 15 minutes
+        { next: { revalidate: 900 } } // 15 minutes
       );
       if (!topStoriesResponse.ok) throw new Error(`Failed to fetch top stories: ${topStoriesResponse.statusText}`);
       const storyIds: number[] = await topStoriesResponse.json();
@@ -31,7 +31,7 @@ export async function getHackerNewsStories(limit: number = 20): Promise<HNStoryI
       const storyPromises = storyIds.slice(0, limit).map(async (id) => {
         const storyResponse = await fetch(
           `${HN_API_URL}/item/${id}.json`,
-          { next: { revalidate: 900 } } // Revalidate every 15 minutes
+          { next: { revalidate: 900 } } // 15 minutes
         );
         if (!storyResponse.ok) throw new Error(`Failed to fetch story item ${id}: ${storyResponse.statusText}`);
         return storyResponse.json() as Promise<HNStory>;
