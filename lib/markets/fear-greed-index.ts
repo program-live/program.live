@@ -1,11 +1,16 @@
-export interface FearGreedIndexData {
+// API for Fear & Greed Index data
+
+import { fetchWithBackoff } from '../utils';
+
+// Fear & Greed Index API types
+interface FearGreedIndexData {
   value: string
   value_classification: string
   timestamp: string
   time_until_update?: string
 }
 
-export interface FearGreedIndexApiResponse {
+interface FearGreedIndexApiResponse {
   name: string
   data: FearGreedIndexData[]
   metadata: {
@@ -13,58 +18,49 @@ export interface FearGreedIndexApiResponse {
   }
 }
 
+// Fallback fear and greed data
+export const fallbackFearGreedData = {
+  value: "50",
+  value_classification: "Neutral",
+  timestamp: new Date().toISOString(),
+  time_until_update: "1 hour"
+};
+
+export async function getFearGreedIndex() {
+  return await fetchWithBackoff(async () => {
+    const response = await fetch('https://api.alternative.me/fng/', {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      // Special handling for quota exceeded
+      if (response.status === 429) {
+        console.error('API quota exceeded - using fallback data');
+        return fallbackFearGreedData;
+      }
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: FearGreedIndexApiResponse = await response.json();
+
+    if (data.metadata.error) {
+      throw new Error(`API error: ${data.metadata.error}`);
+    }
+
+    if (data.data && data.data.length > 0) {
+      return data.data[0];
+    }
+
+    return fallbackFearGreedData;
+  });
+}
+
 export interface FearGreedIndexLevel {
   range: number[]
   label: string
   color: string
-}
-
-export async function fetchFearGreedIndexData(): Promise<FearGreedIndexData | null> {
-  try {
-    const response = await fetch('https://api.alternative.me/fng/', {
-      next: { revalidate: 86400 } // Cache for 24 hours since it updates daily
-    })
-    
-    if (!response.ok) {
-      console.error(`HTTP error! status: ${response.status}`)
-      return null
-    }
-    
-    // Get the raw text first to handle potential JSON parsing issues
-    const rawText = await response.text()
-    
-    try {
-      // Try to parse as JSON first
-      const data: FearGreedIndexApiResponse = JSON.parse(rawText)
-      
-      if (data.metadata.error) {
-        console.error('API error:', data.metadata.error)
-        return null
-      }
-      
-      if (data.data && data.data.length > 0) {
-        return data.data[0]
-      }
-    } catch (parseError) {
-      // If JSON parsing fails, check if it's the malformed error response
-      if (rawText.includes('Quota exceeded')) {
-        console.error('API quota exceeded - using fallback data')
-        // Return fallback data when rate limited
-        return {
-          value: "50",
-          value_classification: "Neutral",
-          timestamp: new Date().toISOString(),
-          time_until_update: "1 hour"
-        }
-      }
-      console.error('Failed to parse API response:', parseError)
-    }
-    
-    return null
-  } catch (err) {
-    console.error('Failed to fetch fear and greed data:', err)
-    return null
-  }
 }
 
 export function getFearGreedIndexLevel(data: FearGreedIndexData | null): FearGreedIndexLevel {

@@ -14,9 +14,11 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as crons from "../crons.js";
+import type * as fearGreedIndex from "../fearGreedIndex.js";
+import type * as news from "../news.js";
 import type * as openSource from "../openSource.js";
 import type * as quotes from "../quotes.js";
-import type * as sampleSponsors from "../sampleSponsors.js";
+import type * as samples_sampleSponsors from "../samples/sampleSponsors.js";
 import type * as sponsors from "../sponsors.js";
 import type * as streamInfo from "../streamInfo.js";
 import type * as streamStatus from "../streamStatus.js";
@@ -32,9 +34,11 @@ import type * as weather from "../weather.js";
  */
 declare const fullApi: ApiFromModules<{
   crons: typeof crons;
+  fearGreedIndex: typeof fearGreedIndex;
+  news: typeof news;
   openSource: typeof openSource;
   quotes: typeof quotes;
-  sampleSponsors: typeof sampleSponsors;
+  "samples/sampleSponsors": typeof samples_sampleSponsors;
   sponsors: typeof sponsors;
   streamInfo: typeof streamInfo;
   streamStatus: typeof streamStatus;

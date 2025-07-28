@@ -1,11 +1,22 @@
+import { fetchQuery } from 'convex/nextjs';
+import { api } from '@/convex/_generated/api';
 import { 
-  FearGreedIndexData,
   getFearGreedIndexLevel, 
   getFearGreedIndexNeedleRotation, 
   getFearGreedIndexDisplayValue 
 } from '@/lib/markets/fear-greed-index'
 
-export function FearGreedIndex({ data }: { data: FearGreedIndexData | null }) {
+export async function FearGreedIndex() {
+  const fearGreedData = await fetchQuery(api.fearGreedIndex.getFearGreedData);
+  
+  // Transform Convex data to match expected format
+  const data = fearGreedData ? {
+    value: fearGreedData.value,
+    value_classification: fearGreedData.value_classification,
+    timestamp: fearGreedData.timestamp,
+    time_until_update: fearGreedData.time_until_update
+  } : null;
+
   const level = getFearGreedIndexLevel(data)
   const needleRotation = getFearGreedIndexNeedleRotation(data)
   const displayValue = getFearGreedIndexDisplayValue(data)
@@ -39,7 +50,6 @@ export function FearGreedIndex({ data }: { data: FearGreedIndexData | null }) {
         <div className="relative flex items-center justify-center w-[29px] h-15">
           {/* Arc */}
           <div className="absolute h-10 border-l border-r border-t border-dotted rounded-t-full w-20"></div>
-          
           {/* Needle Arm */}
           <div
             className="absolute w-1 h-6 bottom-4 bg-foreground transition-transform duration-1000 rounded-full"
@@ -48,7 +58,6 @@ export function FearGreedIndex({ data }: { data: FearGreedIndexData | null }) {
               transformOrigin: "bottom center",
             }}
           />
-
           {/* Needle Dot */}
           <div className="absolute bottom-3 w-2 h-2 bg-foreground rounded-full" />
         </div>

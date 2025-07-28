@@ -1,3 +1,5 @@
+// API for News data
+
 import { fetchWithBackoff } from "./utils";
 
 export interface HNStoryItem {
@@ -16,9 +18,7 @@ interface HNStory {
 
 const HN_API_URL = "https://hacker-news.firebaseio.com/v0";
 
-export async function getHackerNewsStories(limit: number = 20, isMobile: boolean = false): Promise<HNStoryItem[]> {
-  const adjustedLimit = isMobile ? Math.floor(limit * 0.67) : limit;
-
+export async function getHackerNewsStories(limit: number = 20): Promise<HNStoryItem[]> {
   try {
     return await fetchWithBackoff(async () => {
       const topStoriesResponse = await fetch(
@@ -28,7 +28,7 @@ export async function getHackerNewsStories(limit: number = 20, isMobile: boolean
       if (!topStoriesResponse.ok) throw new Error(`Failed to fetch top stories: ${topStoriesResponse.statusText}`);
       const storyIds: number[] = await topStoriesResponse.json();
 
-      const storyPromises = storyIds.slice(0, adjustedLimit).map(async (id) => {
+      const storyPromises = storyIds.slice(0, limit).map(async (id) => {
         const storyResponse = await fetch(
           `${HN_API_URL}/item/${id}.json`,
           { next: { revalidate: 900 } } // Revalidate every 15 minutes

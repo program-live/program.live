@@ -1,4 +1,5 @@
-import { unstable_cache } from 'next/cache';
+// API for weather data
+
 import { fetchWithBackoff } from './utils';
 
 // Open-Meteo API types
@@ -18,19 +19,13 @@ interface OpenMeteoResponse {
   };
 }
 
-export interface WeatherDay {
-  day: string;
-  temp: number;
-  condition: string;
-}
-
 const TORONTO_COORDINATES = {
   latitude: 43.6532,
   longitude: -79.3832,
 };
 
-// Fallback weather data (same as current placeholder)
-const fallbackWeatherData: WeatherDay[] = [
+// Fallback weather data
+export const fallbackWeatherData = [
   { day: "SUN", temp: 24, condition: "⛅" },
   { day: "MON", temp: 22, condition: "🌤️" },
   { day: "TUE", temp: 26, condition: "☀️" },
@@ -69,51 +64,36 @@ function getDayAbbreviation(dateString: string): string {
   return days[date.getDay()];
 }
 
-// Fetch weather data from Open-Meteo
-async function fetchSevenDayForecastData(): Promise<WeatherDay[]> {
-  try {
-    return await fetchWithBackoff(async () => {
-      const response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${TORONTO_COORDINATES.latitude}&longitude=${TORONTO_COORDINATES.longitude}&daily=temperature_2m_max,weather_code&timezone=America/Toronto&forecast_days=7`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+export async function getWeatherForecast() {
+  return await fetchWithBackoff(async () => {
+    const response = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${TORONTO_COORDINATES.latitude}&longitude=${TORONTO_COORDINATES.longitude}&daily=temperature_2m_max,weather_code&timezone=America/Toronto&forecast_days=7`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }
+    );
 
-      const data: OpenMeteoResponse = await response.json();
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: OpenMeteoResponse = await response.json();
+    
+    // Transform the data to match our schema
+    return data.daily.time.map((dateString, index) => {
+      const maxTemp = data.daily.temperature_2m_max[index];
+      const weatherCode = data.daily.weather_code[index];
       
-      // Transform the data to match our WeatherDay interface
-      return data.daily.time.map((dateString, index) => {
-        const maxTemp = data.daily.temperature_2m_max[index];
-        const weatherCode = data.daily.weather_code[index];
-        
-        // Use maximum temperature for display
-        const temp = Math.round(maxTemp);
-        
-        return {
-          day: getDayAbbreviation(dateString),
-          temp,
-          condition: getWeatherCondition(weatherCode)
-        };
-      });
+      // Use maximum temperature for display
+      const temp = Math.round(maxTemp);
+      
+      return {
+        day: getDayAbbreviation(dateString),
+        temp,
+        condition: getWeatherCondition(weatherCode)
+      };
     });
-  } catch (error) {
-    console.error('Error fetching weather data:', error);
-    return fallbackWeatherData;
-  }
-}
-
-export const getWeatherData = unstable_cache(
-  fetchSevenDayForecastData,
-  ['weather-data'],
-  {
-    revalidate: 900, // 15 minutes in seconds
-    tags: ['weather']
-  }
-); 
+  });
+} 

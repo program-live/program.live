@@ -1,4 +1,4 @@
-import { mutation } from "./_generated/server";
+import { mutation } from "../_generated/server";
 
 // Sample data migration - run this once to populate sponsors
 export const populateSampleSponsors = mutation({

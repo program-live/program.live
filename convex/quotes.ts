@@ -1,39 +1,18 @@
 import { internalAction, internalMutation, query } from './_generated/server';
 import { internal } from './_generated/api';
-import { ALL_SYMBOLS, STOCK_HIGHLIGHTS, CRYPTO_HIGHLIGHTS } from '../lib/symbols';
-import { fetchJSON } from '../lib/utils';
+import { getQuotes } from '../lib/markets/finnhub';
 import { v } from 'convex/values';
-
-const BASE = 'https://finnhub.io/api/v1';
-const KEY  = process.env.FINNHUB_API_KEY!;
 
 // Internal action that fetches from API and calls mutation
 export const refresh = internalAction({
   args: {},
   handler: async (ctx) => {
-    const quotes = [];
-    
-    for (const symbol of ALL_SYMBOLS) {
-      const url = `${BASE}/quote?symbol=${symbol}&token=${KEY}`;
-      const data = await fetchJSON(url);
-      
-      const kind = symbol.includes(':') ? 'crypto' as const : 'stock' as const;
-      const isHighlight = kind === 'stock' 
-        ? STOCK_HIGHLIGHTS.includes(symbol)
-        : CRYPTO_HIGHLIGHTS.includes(symbol);
-      
-      quotes.push({
-        symbol: symbol,
-        price: data.c,
-        changePct: data.dp,
-        updated: Date.now(),
-        kind,
-        isHighlight,
-      });
+    try {
+      const quotes = await getQuotes();
+      await ctx.runMutation(internal.quotes.storeQuotes, { quotes });
+    } catch (error) {
+      console.error('Error refreshing quotes:', error);
     }
-    
-    // Call mutation to store all quotes
-    await ctx.runMutation(internal.quotes.storeQuotes, { quotes });
   },
 });
 
