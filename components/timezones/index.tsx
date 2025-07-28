@@ -17,28 +17,29 @@ const timeZones = [
 ];
 
 export default function Timezones() {
-  const [globalTimes, setGlobalTimes] = useState<{ [key: string]: string }>({});
+  const getGlobalTimes = () => {
+    const times: { [key: string]: string } = {};
+    for (const zone of timeZones) {
+      try {
+        times[zone.city] = new Date().toLocaleTimeString("en-US", {
+          timeZone: zone.tz,
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      } catch {
+        times[zone.city] = "00:00";
+      }
+    }
+    return times;
+  };
+
+  const [globalTimes, setGlobalTimes] = useState<{ [key: string]: string }>(getGlobalTimes);
 
   useEffect(() => {
-    const updateTimes = () => {
-      const newTimes: { [key: string]: string } = {};
-      for (const zone of timeZones) {
-        try {
-          newTimes[zone.city] = new Date().toLocaleTimeString("en-US", {
-            timeZone: zone.tz,
-            hour12: false,
-            hour: "2-digit",
-            minute: "2-digit",
-          });
-        } catch {
-          newTimes[zone.city] = "00:00";
-        }
-      }
-      setGlobalTimes(newTimes);
-    };
-
-    updateTimes();
-    const timerId = setInterval(updateTimes, 1000);
+    const timerId = setInterval(() => {
+      setGlobalTimes(getGlobalTimes());
+    }, 1000);
 
     return () => clearInterval(timerId);
   }, []);
@@ -49,7 +50,7 @@ export default function Timezones() {
         <div key={zone.city} className="text-center">
           <div className="flex justify-center">
             <Clock
-              time={globalTimes[zone.city] || "00:00"}
+              time={globalTimes[zone.city]}
               timezone={zone.tz}
               baseTimezone={TIMEZONE}
             />

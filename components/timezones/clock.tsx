@@ -1,5 +1,3 @@
-"use client";
-
 interface ClockProps {
   time: string; // Format: "HH:MM"
   timezone: string;
@@ -65,12 +63,12 @@ export function Clock({ time, timezone, baseTimezone }: ClockProps) {
           x1={center}
           y1={center}
           x2={center}
-          y2={center - radius * 1}
+          y2={center - radius * 0.9}
           stroke="currentColor"
           strokeWidth="1"
           strokeLinecap="round"
           transform={`rotate(${minuteAngle} ${center} ${center})`}
-          className="relative opacity-60"
+          className="relative opacity-60 transition-[transform] duration-1000"
         />
 
         {/* Hour hand */}
@@ -83,14 +81,14 @@ export function Clock({ time, timezone, baseTimezone }: ClockProps) {
           strokeWidth="1.5"
           strokeLinecap="round"
           transform={`rotate(${hourAngle} ${center} ${center})`}
-          className="relative"
+          className="relative transition-[transform] duration-1000"
         />
       </svg>
 
       {/* +1 indicator for next day */}
       {isNextDay && (
         <span
-          className="absolute -bottom-1 -right-1 text-[7px] font-extrabold leading-none tracking-wider z-10"
+          className="absolute -bottom-5 -right-1 text-[7px] font-extrabold leading-none tracking-wider z-10"
           style={{ filter: "drop-shadow('2px 2px black')" }}
         >
           +1

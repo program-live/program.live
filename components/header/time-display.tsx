@@ -1,18 +1,44 @@
-import { cn } from "@/lib/utils";
+'use client'
 
-interface TimeDisplayProps {
-  mounted: boolean;
-  time: Date;
-  className?: string;
-}
+import { Suspense, useState, useEffect } from 'react'
+import { useHydration } from '@/hooks/use-hydration'
 
-export default function TimeDisplay({ mounted, time, className }: TimeDisplayProps) {
+function TimeContent({ className }: { className?: string }) {
+  const [currentTime, setCurrentTime] = useState(new Date())
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 1000) // Update every second
+
+    return () => clearInterval(timer)
+  }, [])
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('en-US', {
+      timeZone: 'America/Toronto',
+      hour12: true,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    })
+  }
+
   return (
-    <span className={cn("text-10 leading-15", className)}>
-      {mounted 
-        ? time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) 
-        : "12:00:00 AM"
-      }
-    </span>
-  );
+    <div className={className}>
+      <time dateTime={currentTime.toISOString()}>
+        {formatTime(currentTime)}
+      </time>
+    </div>
+  )
 }
+
+export default function TimeDisplay({ className }: { className?: string }) {
+  const hydrated = useHydration()
+  
+  return (
+    <Suspense key={hydrated ? 'local' : 'utc'}>
+      <TimeContent className={className} />
+    </Suspense>
+  )
+} 
