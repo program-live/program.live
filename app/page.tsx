@@ -1,6 +1,6 @@
 import Header from "@/components/header/index";
 import Weather from "@/components/weather";
-import Timezones from "@/components/timezones/index";
+import Timezones from "@/components/timezones";
 import Markets from "@/components/markets";
 import Diagnostics from "@/components/diagnostics";
 import News from "@/components/news";
