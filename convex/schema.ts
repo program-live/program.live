@@ -64,12 +64,4 @@ export default defineSchema({
     })),
     updated: v.number(), // Timestamp of last update
   }),
-
-  fearGreedIndex: defineTable({
-    value: v.string(), // The fear/greed index value (0-100)
-    value_classification: v.string(), // "Extreme Fear", "Fear", "Neutral", "Greed", "Extreme Greed"
-    timestamp: v.string(), // Original API timestamp
-    time_until_update: v.optional(v.string()), // Time until next update
-    updated: v.number(), // When this data was cached in our system
-  }),
 }); 

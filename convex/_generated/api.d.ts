@@ -14,7 +14,6 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as crons from "../crons.js";
-import type * as fearGreedIndex from "../fearGreedIndex.js";
 import type * as news from "../news.js";
 import type * as openSource from "../openSource.js";
 import type * as quotes from "../quotes.js";
@@ -34,7 +33,6 @@ import type * as weather from "../weather.js";
  */
 declare const fullApi: ApiFromModules<{
   crons: typeof crons;
-  fearGreedIndex: typeof fearGreedIndex;
   news: typeof news;
   openSource: typeof openSource;
   quotes: typeof quotes;
