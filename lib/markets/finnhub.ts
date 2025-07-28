@@ -44,7 +44,7 @@ export async function getQuotes() {
   
   for (const symbol of ALL_SYMBOLS) {
     const url = `${BASE_URL}/quote?symbol=${symbol}&token=${KEY}`;
-    const data = await fetchJSON(url, 900);
+    const data = await fetchJSON(url, 900); // revalidate every 15 minutes
     
     const kind = symbol.includes(':') ? 'crypto' as const : 'stock' as const;
     const isHighlight = kind === 'stock' 

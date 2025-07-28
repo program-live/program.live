@@ -52,6 +52,9 @@ export async function getOpenSourceProjects(limit: number = 50) {
         'Accept': 'application/vnd.github.v3+json',
         'User-Agent': 'program-live-app',
       },
+      next: {
+        revalidate: 900, // 15 minutes
+      },
     });
 
     if (!response.ok) {

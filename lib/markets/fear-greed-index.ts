@@ -32,6 +32,9 @@ export async function getFearGreedIndex() {
       headers: {
         'Content-Type': 'application/json',
       },
+      next: {
+        revalidate: 3600, // 1 hour
+      },
     });
 
     if (!response.ok) {

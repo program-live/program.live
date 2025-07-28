@@ -72,6 +72,9 @@ export async function getWeatherForecast() {
         headers: {
           'Content-Type': 'application/json',
         },
+        next: {
+          revalidate: 900,
+        },
       }
     );
 
