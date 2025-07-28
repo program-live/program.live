@@ -9,7 +9,7 @@ export default function LiveStatus({ className }: { className?: string }) {
     return (
       <div className={`flex items-center gap-5 ${className}`}>
         <div className="size-7 bg-muted-foreground/60" />
-        <span>PINGING</span>
+        <span>PINGING…</span>
       </div>
     );
   }
@@ -25,7 +25,7 @@ export default function LiveStatus({ className }: { className?: string }) {
 
   return (
     <div className={`flex items-center gap-5 ${className}`}>
-      <div className="size-7 bg-muted-foreground" />
+      <div className="size-7 bg-muted-foreground/60" />
       <span>OFFLINE</span>
     </div>
   );

@@ -7,14 +7,14 @@ const liveStatuses = [
   { name: "S0URCE", status: "T0R0NT0", srName: "Source" },
   { name: "CAMERA", status: "ON", srName: "Camera" },
   { name: "AUDI0", status: "ACTIVE", srName: "Audio" },
-  { name: "BITRATE", status: "4.2MB/S", srName: "Bitrate" },
+  { name: "BITRATE", status: "4.2 MB/S", srName: "Bitrate" },
 ];
 
 const offlineStatuses = [
   { name: "S0URCE", status: "T0R0NT0", srName: "Source" },
   { name: "CAMERA", status: "OFF", srName: "Camera" },
   { name: "AUDI0", status: "INACTIVE", srName: "Audio" },
-  { name: "BITRATE", status: "0MB/S", srName: "Bitrate" },
+  { name: "BITRATE", status: "0 MB/S", srName: "Bitrate" },
 ];
 
 export default function Diagnostics({ className }: { className?: string }) {
