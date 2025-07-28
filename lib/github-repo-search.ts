@@ -1,4 +1,4 @@
-// API for Open Source Projects data
+// API for Open Source Repo data
 
 import { fetchWithBackoff } from './utils';
 
@@ -33,7 +33,7 @@ export function formatStarCount(stars: number): string {
   return stars.toString();
 }
 
-export async function getOpenSourceProjects(limit: number = 50) {
+export async function getOpenSourceRepos(limit: number = 50) {
   return await fetchWithBackoff(async () => {
     const date = new Date();
     date.setDate(date.getDate() - 45);

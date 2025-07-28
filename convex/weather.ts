@@ -1,7 +1,7 @@
 import { internalAction, internalMutation, query } from './_generated/server';
 import { internal } from './_generated/api';
 import { v } from 'convex/values';
-import { getWeatherForecast, fallbackWeatherData } from '../lib/open-meteo';
+import { getWeatherForecast, fallbackWeather } from '../lib/open-meteo';
 
 // Internal action that fetches from Open-Meteo API and calls mutation
 export const refresh = internalAction({
@@ -10,15 +10,15 @@ export const refresh = internalAction({
   handler: async (ctx) => {
     try {
       const weatherDays = await getWeatherForecast();
-      await ctx.runMutation(internal.weather.storeWeatherData, { 
+      await ctx.runMutation(internal.weather.storeWeather, { 
         days: weatherDays,
         updated: Date.now()
       });
     } catch (error) {
       console.error('Error refreshing weather data:', error);
       // Use fallback data if fetch fails
-      await ctx.runMutation(internal.weather.storeWeatherData, { 
-        days: fallbackWeatherData,
+      await ctx.runMutation(internal.weather.storeWeather, { 
+        days: fallbackWeather,
         updated: Date.now()
       });
     }
@@ -28,7 +28,7 @@ export const refresh = internalAction({
 });
 
 // Internal mutation that writes to database
-export const storeWeatherData = internalMutation({
+export const storeWeather = internalMutation({
   args: {
     days: v.array(v.object({
       day: v.string(),
@@ -40,13 +40,13 @@ export const storeWeatherData = internalMutation({
   returns: v.null(),
   handler: async (ctx, args) => {
     // Clear existing weather data (should only be one document)
-    const existing = await ctx.db.query('weatherData').collect();
+    const existing = await ctx.db.query('weather').collect();
     for (const weather of existing) {
       await ctx.db.delete(weather._id);
     }
     
     // Insert new weather data
-    await ctx.db.insert('weatherData', {
+    await ctx.db.insert('weather', {
       days: args.days,
       updated: args.updated,
     });
@@ -56,11 +56,11 @@ export const storeWeatherData = internalMutation({
 });
 
 // Query to get weather data
-export const getWeatherData = query({
+export const getWeather = query({
   args: {},
   returns: v.union(
     v.object({
-      _id: v.id('weatherData'),
+      _id: v.id('weather'),
       _creationTime: v.number(),
       days: v.array(v.object({
         day: v.string(),
@@ -72,7 +72,7 @@ export const getWeatherData = query({
     v.null()
   ),
   handler: async (ctx) => {
-    const weatherData = await ctx.db.query('weatherData').first();
+    const weatherData = await ctx.db.query('weather').first();
     return weatherData;
   },
 }); 

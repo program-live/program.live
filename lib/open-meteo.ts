@@ -25,7 +25,7 @@ const TORONTO_COORDINATES = {
 };
 
 // Fallback weather data
-export const fallbackWeatherData = [
+export const fallbackWeather = [
   { day: "SUN", temp: 24, condition: "⛅" },
   { day: "MON", temp: 22, condition: "🌤️" },
   { day: "TUE", temp: 26, condition: "☀️" },

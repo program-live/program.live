@@ -4,7 +4,7 @@ import Timezones from "@/components/timezones";
 import Markets from "@/components/markets";
 import Diagnostics from "@/components/diagnostics";
 import News from "@/components/news";
-import OpenSourceProjects from "@/components/open-source-projects";
+import OpenSourceRepos from "@/components/open-source-repos";
 import Footer from "@/components/footer";
 import SectionHeader from "@/components/section-header";
 import Stream from "@/components/stream";
@@ -37,7 +37,7 @@ export default function Home() {
           </div>
           <div className="h-[166px] xs:h-auto overflow-y-auto xl:mb-20">
             <SectionHeader title="Open Source" />
-            <OpenSourceProjects />
+            <OpenSourceRepos />
           </div>
           <Diagnostics className="hidden xl:flex" />
         </div>

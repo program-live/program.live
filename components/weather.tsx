@@ -2,9 +2,9 @@ import { fetchQuery } from 'convex/nextjs';
 import { api } from '@/convex/_generated/api';
 
 export default async function Weather() {
-  const weatherData = await fetchQuery(api.weather.getWeatherData);
+  const weather = await fetchQuery(api.weather.getWeather);
   
-  const days = weatherData?.days || [];
+  const days = weather?.days || [];
 
   return (
     <div className="flex justify-between">

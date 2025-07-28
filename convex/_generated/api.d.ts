@@ -15,8 +15,8 @@ import type {
 } from "convex/server";
 import type * as crons from "../crons.js";
 import type * as news from "../news.js";
-import type * as openSource from "../openSource.js";
 import type * as quotes from "../quotes.js";
+import type * as repos from "../repos.js";
 import type * as samples_sampleSponsors from "../samples/sampleSponsors.js";
 import type * as sponsors from "../sponsors.js";
 import type * as streamInfo from "../streamInfo.js";
@@ -34,8 +34,8 @@ import type * as weather from "../weather.js";
 declare const fullApi: ApiFromModules<{
   crons: typeof crons;
   news: typeof news;
-  openSource: typeof openSource;
   quotes: typeof quotes;
+  repos: typeof repos;
   "samples/sampleSponsors": typeof samples_sampleSponsors;
   sponsors: typeof sponsors;
   streamInfo: typeof streamInfo;
