@@ -3,11 +3,7 @@
 import { useEffect, useState } from "react";
 import { useYouTubeLiveStatus } from "@/hooks/use-youtube-live-status";
 
-interface StreamDurationProps {
-  className?: string;
-}
-
-export default function StreamDuration({ className }: StreamDurationProps) {
+export default function StreamDuration({ className }: { className?: string }) {
   const { isLive, startedAt } = useYouTubeLiveStatus();
   const [duration, setDuration] = useState("--:--:--");
 

@@ -19,13 +19,18 @@ const offlineStatuses = [
 
 export default function Diagnostics({ className }: { className?: string }) {
   const { isLive } = useYouTubeLiveStatus();
-    const statuses = isLive ? liveStatuses : offlineStatuses;
+  const statuses = isLive ? liveStatuses : offlineStatuses;
   
   return (
-    <div className={cn("relative flex flex-col border-t border-r rounded-tr bg-background xl:sticky bottom-0 pt-10", className)}>
-      <h2 className="font-extrabold whitespace-nowrap uppercase absolute -top-5 -left-2 z-[1] bg-background px-2">Diagnostics</h2>
+    <div className={cn(
+      "relative flex flex-col border-t border-r rounded-tr bg-background xl:sticky bottom-0 pt-10", 
+      className
+    )}>
+      <h2 className="font-extrabold whitespace-nowrap uppercase absolute -top-5 -left-2 z-[1] bg-background px-2">
+        Diagnostics
+      </h2>
       {statuses.slice(0, 5).map((status, i) => (
-        <div key={i} className="flex w-full gap-15">
+        <div key={i} className="flex w-full">
           <span className="w-full" aria-hidden={!!status.srName}>{status.name}:</span>
           {status.srName && <span className="sr-only">{status.srName}</span>}
           <span className="w-full">{status.status}</span>
