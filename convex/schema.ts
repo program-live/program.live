@@ -26,17 +26,19 @@ export default defineSchema({
   }),
   
   sponsors: defineTable({
+    placement: v.union(v.literal("card"), v.literal("banner")),
     name: v.string(),
     logoUrl: v.optional(v.string()), // URL to sponsor logo
     linkUrl: v.string(), // URL sponsor links to
-    displayText: v.optional(v.string()), // Text to display if no logo
+    displayText: v.string(), // Now required - text to display (alt text for logos or primary text)
     displayOrder: v.number(), // Order to display sponsors
     isActive: v.boolean(), // Whether sponsor should be shown
-    paddingClass: v.optional(v.string()), // Custom padding class
     createdAt: v.number(),
     updatedAt: v.number(),
   }).index("by_display_order", ["displayOrder"])
-    .index("by_active", ["isActive"]),
+    .index("by_active", ["isActive"])
+    .index("by_active_placement", ["isActive", "placement"]) // New index for filtering by placement
+    .index("by_placement_order", ["placement", "displayOrder"]), // New index for ordering within placement
 
   repos: defineTable({
     title: v.string(),

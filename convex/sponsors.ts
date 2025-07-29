@@ -13,6 +13,22 @@ export const getActiveSponsors = query({
   },
 });
 
+// Get active sponsors by placement
+export const getActiveSponsorsByPlacement = query({
+  args: {
+    placement: v.union(v.literal("card"), v.literal("banner")),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("sponsors")
+      .withIndex("by_active_placement", (q) => 
+        q.eq("isActive", true).eq("placement", args.placement)
+      )
+      .order("asc")
+      .collect();
+  },
+});
+
 // Get all sponsors for admin management
 export const getAllSponsors = query({
   args: {},
@@ -28,13 +44,13 @@ export const getAllSponsors = query({
 // Create a new sponsor
 export const createSponsor = mutation({
   args: {
+    placement: v.union(v.literal("card"), v.literal("banner")),
     name: v.string(),
     logoUrl: v.optional(v.string()),
     linkUrl: v.string(),
-    displayText: v.optional(v.string()),
+    displayText: v.string(),
     displayOrder: v.number(),
     isActive: v.boolean(),
-    paddingClass: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const now = Date.now();
@@ -51,13 +67,13 @@ export const createSponsor = mutation({
 export const updateSponsor = mutation({
   args: {
     id: v.id("sponsors"),
+    placement: v.optional(v.union(v.literal("card"), v.literal("banner"))),
     name: v.optional(v.string()),
     logoUrl: v.optional(v.string()),
     linkUrl: v.optional(v.string()),
     displayText: v.optional(v.string()),
     displayOrder: v.optional(v.number()),
     isActive: v.optional(v.boolean()),
-    paddingClass: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
@@ -100,4 +116,33 @@ export const toggleSponsorStatus = mutation({
       updatedAt: Date.now(),
     });
   },
-}); 
+});
+
+// Migration: Backfill existing sponsors with placement='card'
+export const backfillSponsorPlacements = mutation({
+  args: {},
+  handler: async (ctx) => {
+    // Get all sponsors without placement field
+    const allSponsors = await ctx.db.query("sponsors").collect();
+    
+    let updatedCount = 0;
+    for (const sponsor of allSponsors) {
+      // Cast to any to check for undefined placement on legacy documents
+      const legacySponsor = sponsor as any;
+      if (legacySponsor.placement === undefined) {
+        await ctx.db.patch(legacySponsor._id, {
+          placement: "card",
+          displayText: legacySponsor.displayText || legacySponsor.name,
+          updatedAt: Date.now(),
+        });
+        updatedCount++;
+      }
+    }
+    
+    return {
+      message: `Updated ${updatedCount} sponsors with placement='card'`,
+      totalSponsors: allSponsors.length,
+      updatedCount,
+    };
+  },
+});

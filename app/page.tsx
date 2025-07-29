@@ -5,7 +5,7 @@ import Markets from "@/components/markets";
 import Diagnostics from "@/components/diagnostics";
 import News from "@/components/news";
 import OpenSourceRepos from "@/components/open-source-repos";
-import Footer from "@/components/footer";
+import Footer from "@/components/footer/index";
 import SectionHeader from "@/components/section-header";
 import Stream from "@/components/stream";
 

@@ -20,17 +20,17 @@ const FALLBACK_SPONSOR_NAME = "Buy Spot";
 const FALLBACK_SPONSOR: Doc<"sponsors"> = {
   _id: "fallback" as any,
   _creationTime: 0,
+  placement: "card",
   name: FALLBACK_SPONSOR_NAME,
   linkUrl: "https://app.market.dev/checkout/cmdg4lrpa0001l10acbshoc4k",
   displayText: "BUY SPOT",
-  paddingClass: "px-30",
   isActive: true,
   displayOrder: 999,
   createdAt: 0,
   updatedAt: 0
 };
 
-export default function Sponsors({ sponsors }: { sponsors: Doc<"sponsors">[] }) {
+export default function SponsorCards({ sponsors }: { sponsors: Doc<"sponsors">[] }) {
   // Fill empty spots with fallback sponsors to always show 4 slots
   const displaySponsors = [...sponsors];
   while (displaySponsors.length < 4) {
@@ -41,9 +41,14 @@ export default function Sponsors({ sponsors }: { sponsors: Doc<"sponsors">[] }) 
   const sponsorsToShow = displaySponsors.slice(0, 4);
 
   return (
-    <div className="flex-1 flex items-end min-h-[120px] md:min-h-[90px] max-h-[120px] xl:max-h-none">
+    <div className=" flex h-full min-h-[120px] md:min-h-[90px] max-h-[120px] xl:max-h-[175px]">
       <div className="relative grid grid-cols-2 md:grid-cols-4 h-full border-t border-dotted w-full border-l">
-        <h2 aria-hidden className="absolute text-center -top-5 -left-3 bg-background z-[1] px-2">SP0NSORS</h2>
+        <h2
+          className="absolute text-center -top-5 -left-3 bg-background z-[1] px-2 hidden md:block"
+          aria-hidden
+        >
+          SP0NSORS
+        </h2>
         <span className="sr-only">Sponsors</span>
         
         {sponsorsToShow.map((sponsor, index) => (
@@ -52,7 +57,7 @@ export default function Sponsors({ sponsors }: { sponsors: Doc<"sponsors">[] }) 
               href={sponsor.linkUrl} 
               target="_blank" 
               rel="noopener noreferrer" 
-              className={`group flex items-center justify-center ${sponsor.paddingClass || 'px-[30px]'} w-full h-full`}
+              className="group flex items-center justify-center px-[30px] w-full h-full" 
             >
               {sponsor.logoUrl ? (
                 <Image 
