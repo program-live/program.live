@@ -1,16 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Trash2, Edit, Plus } from "lucide-react"
+import { Trash, Pencil, Plus, ArrowLeft } from "lucide-react"
 import { useQuery, useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
+import { cn } from "@/lib/utils"
+import { TriangleRightIcon } from "@radix-ui/react-icons"
 
 function SponsorForm({ sponsor = null, onSave, onCancel }: { 
   sponsor?: any, 
@@ -53,109 +53,119 @@ function SponsorForm({ sponsor = null, onSave, onCancel }: {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{sponsor ? "Edit Sponsor" : "Add New Sponsor"}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="name">Sponsor Name *</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              required
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="linkUrl">Link URL *</Label>
-            <Input
-              id="linkUrl"
-              type="url"
-              value={formData.linkUrl}
-              onChange={(e) => setFormData(prev => ({ ...prev, linkUrl: e.target.value }))}
-              required
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="logoUrl">Logo URL (optional)</Label>
-            <Input
-              id="logoUrl"
-              type="url"
-              value={formData.logoUrl}
-              onChange={(e) => setFormData(prev => ({ ...prev, logoUrl: e.target.value }))}
-              placeholder="Leave empty to use display text"
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="displayText">Display Text (if no logo)</Label>
-            <Input
-              id="displayText"
-              value={formData.displayText}
-              onChange={(e) => setFormData(prev => ({ ...prev, displayText: e.target.value }))}
-              placeholder="Text to show if no logo provided"
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="displayOrder">Display Order</Label>
-            <Input
-              id="displayOrder"
-              type="number"
-              min="1"
-              value={formData.displayOrder}
-              onChange={(e) => setFormData(prev => ({ ...prev, displayOrder: parseInt(e.target.value) }))}
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="paddingClass">Padding Class</Label>
-            <Input
-              id="paddingClass"
-              value={formData.paddingClass}
-              onChange={(e) => setFormData(prev => ({ ...prev, paddingClass: e.target.value }))}
-              placeholder="e.g., px-[30px] or px-[15px] sm:px-[30px]"
-            />
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="isActive"
-              checked={formData.isActive}
-              onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
-            />
-            <Label htmlFor="isActive">Active</Label>
-          </div>
-          
-          <div className="flex space-x-2">
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : (sponsor ? "Update" : "Create")}
-            </Button>
-            <Button type="button" variant="outline" onClick={onCancel}>
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+    <div className="flex flex-col gap-15">
+      <div className="relative flex items-center gap-10">
+        <Button variant="ghost" size="icon" onClick={onCancel}>
+          <ArrowLeft className="w-25 h-25" />
+        </Button>
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-15 font-extrabold">{sponsor ? "Edit Sponsor" : "Add New Sponsor"}</h1>
+      </div>
+      <form onSubmit={handleSubmit} className="space-y-10">
+        <div>
+          <Label htmlFor="name">Sponsor Name<span className="text-destructive align-super">*</span></Label>
+          <Input
+            id="name"
+            value={formData.name}
+            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+            required
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="linkUrl">Link URL<span className="text-destructive align-super">*</span></Label>
+          <Input
+            id="linkUrl"
+            type="url"
+            value={formData.linkUrl}
+            onChange={(e) => setFormData(prev => ({ ...prev, linkUrl: e.target.value }))}
+            required
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="logoUrl">Logo URL (optional)</Label>
+          <Input
+            id="logoUrl"
+            type="url"
+            value={formData.logoUrl}
+            onChange={(e) => setFormData(prev => ({ ...prev, logoUrl: e.target.value }))}
+            placeholder="Leave empty to use display text"
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="displayText">Display Text (if no logo)</Label>
+          <Input
+            id="displayText"
+            value={formData.displayText}
+            onChange={(e) => setFormData(prev => ({ ...prev, displayText: e.target.value }))}
+            placeholder="Text to show if no logo provided"
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="displayOrder">Display Order</Label>
+          <Input
+            id="displayOrder"
+            type="number"
+            min="1"
+            value={formData.displayOrder}
+            onChange={(e) => setFormData(prev => ({ ...prev, displayOrder: parseInt(e.target.value) }))}
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="paddingClass">Padding Class</Label>
+          <Input
+            id="paddingClass"
+            value={formData.paddingClass}
+            onChange={(e) => setFormData(prev => ({ ...prev, paddingClass: e.target.value }))}
+            placeholder="e.g., px-[30px] or px-[15px] sm:px-[30px]"
+          />
+        </div>
+        
+        <div className="flex items-center space-x-10 py-10">
+          <Switch
+            id="isActive"
+            checked={formData.isActive}
+            onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
+          />
+          <Label htmlFor="isActive">Active</Label>
+        </div>
+        
+        <Button type="submit" disabled={isSubmitting} className="w-full">
+          {isSubmitting ? "Saving..." : (sponsor ? "Update" : "Create")}
+        </Button>
+      </form>
+    </div>
   )
 }
 
 function AdminDashboard() {
   const currentStatus = useQuery(api.streamStatus.getCurrentStatus)
+  const currentStreamInfo = useQuery(api.streamInfo.getCurrentInfo)
   const sponsors = useQuery(api.sponsors.getAllSponsors)
   
   const updateStatus = useMutation(api.streamStatus.updateStatus)
+  const updateStreamInfo = useMutation(api.streamInfo.updateInfo)
+  const clearStreamInfo = useMutation(api.streamInfo.clearInfo)
   const toggleSponsorStatus = useMutation(api.sponsors.toggleSponsorStatus)
   const deleteSponsor = useMutation(api.sponsors.deleteSponsor)
   
   const [isToggling, setIsToggling] = useState(false)
+  const [isUpdatingInfo, setIsUpdatingInfo] = useState(false)
+  const [streamTitle, setStreamTitle] = useState("")
+  const [streamDescription, setStreamDescription] = useState("")  
   const [editingSponsor, setEditingSponsor] = useState<any>(null)
   const [showAddForm, setShowAddForm] = useState(false)
+
+  // Populate fields with current stream info when data loads
+  useEffect(() => {
+    if (currentStreamInfo) {
+      setStreamTitle(currentStreamInfo.title || "")
+      setStreamDescription(currentStreamInfo.description || "")
+    }
+  }, [currentStreamInfo])
 
   const handleStatusToggle = async (isLive: boolean) => {
     setIsToggling(true)
@@ -165,6 +175,35 @@ function AdminDashboard() {
       console.error("Failed to update stream status:", error)
     } finally {
       setIsToggling(false)
+    }
+  }
+
+  const handleUpdateStreamInfo = async () => {
+    setIsUpdatingInfo(true)
+    try {
+      await updateStreamInfo({
+        title: streamTitle.trim() || undefined,
+        description: streamDescription.trim() || undefined,
+      })
+      setStreamTitle("")
+      setStreamDescription("")
+    } catch (error) {
+      console.error("Failed to update stream info:", error)
+    } finally {
+      setIsUpdatingInfo(false)
+    }
+  }
+
+  const handleClearStreamInfo = async () => {
+    setIsUpdatingInfo(true)
+    try {
+      await clearStreamInfo()
+      setStreamTitle("")
+      setStreamDescription("")
+    } catch (error) {
+      console.error("Failed to clear stream info:", error)
+    } finally {
+      setIsUpdatingInfo(false)
     }
   }
 
@@ -191,19 +230,18 @@ function AdminDashboard() {
     setShowAddForm(false)
   }
 
-  if (currentStatus === undefined || sponsors === undefined) {
+  if (currentStatus === undefined || currentStreamInfo === undefined || sponsors === undefined) {
     return (
-      <div className="min-h-screen bg-custom-dark-gray flex items-center justify-center">
-        <p className="text-white">Loading...</p>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-foreground">Loading...</p>
       </div>
     )
   }
 
   if (editingSponsor || showAddForm) {
     return (
-      <div className="min-h-screen bg-custom-dark-gray p-8">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-white mb-8">Admin Dashboard</h1>
+      <div className="min-h-screen bg-custom-dark-gray p-15">
+        <div className="max-w-lg mx-auto">
           <SponsorForm
             sponsor={editingSponsor}
             onSave={handleFormSave}
@@ -215,112 +253,183 @@ function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-custom-dark-gray p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-8">Admin Dashboard</h1>
-        
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Livestream Status</CardTitle>
-            <CardDescription>
-              Toggle your stream status to let viewers know when you're live
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="stream-status"
-                checked={currentStatus.isLive}
-                onCheckedChange={handleStatusToggle}
-                disabled={isToggling}
-              />
-              <Label htmlFor="stream-status" className="text-sm font-medium">
-                {currentStatus.isLive ? (
-                  <span className="text-green-600">🔴 Live</span>
-                ) : (
-                  <span className="text-gray-600">⚫ Offline</span>
-                )}
-              </Label>
-            </div>
-            {isToggling && (
-              <p className="text-sm text-gray-500">Updating status...</p>
-            )}
-            <div className="text-sm text-gray-600">
-              <p>
-                Last updated:{" "}
-                {new Date(currentStatus.timestamp).toLocaleString()}
-              </p>
-              {currentStatus.isLive && currentStatus.startedAt && (
-                <p>
-                  Stream started:{" "}
-                  {new Date(currentStatus.startedAt).toLocaleString()}
-                </p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+    <div className="flex flex-col min-h-screen bg-background p-15">
+      <div className="flex flex-col gap-15 relative max-w-lg mx-auto w-full">
+        <h1 className="font-extrabold text-15 text-center">Admin Dashb0ard</h1>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle>Sponsor Management</CardTitle>
-              <CardDescription>Manage sponsors that appear on the homepage</CardDescription>
+        <div className="flex flex-col gap-15 border-l pl-15">
+          <div className="flex items-center gap-x-5">
+            <Switch
+              id="stream-status"
+              checked={currentStatus.isLive}
+              onCheckedChange={handleStatusToggle}
+              disabled={isToggling}
+            />
+            <label htmlFor="stream-status" className={cn(isToggling && "opacity-70")}>
+              {currentStatus.isLive ? "Live" : "Offline"}
+            </label>
+          </div>
+
+          <table className="text-muted-foreground w-fit" cellPadding="0" cellSpacing="0">
+            <tbody>
+              <tr>
+                <td className="pr-15 flex-1">Stream started:{"\u0020"}</td>
+                <td className="pr-15 flex-1">
+                  {(currentStatus.isLive && currentStatus.startedAt) ? (
+                    new Date(currentStatus.startedAt).toLocaleString().replace(',', '')
+                  ) : (
+                    "—"
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td className="pr-15 flex-1">Last updated:{"\u0020"}</td>
+                <td className="pr-15 flex-1">{new Date(currentStatus.timestamp).toLocaleString().replace(',', '')}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="flex flex-col gap-15 border-l pl-15">
+          <div className="space-y-15">
+            <div className="space-y-5">
+              <label htmlFor="stream-title">
+                Stream Title
+              </label>
+              <Input
+                id="stream-title"
+                placeholder="Leave empty for placeholder"
+                value={streamTitle}
+                onChange={(e) => setStreamTitle(e.target.value)}
+                disabled={isUpdatingInfo}
+              />
             </div>
-            <Button onClick={() => setShowAddForm(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Add Sponsor
-            </Button>
-          </CardHeader>
-          <CardContent>
-            {sponsors.length === 0 ? (
-              <p className="text-gray-400">No sponsors yet. Add your first sponsor!</p>
-            ) : (
-              <div className="space-y-4">
-                {sponsors.map((sponsor) => (
-                  <div key={sponsor._id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3">
-                        <h3 className="font-medium">{sponsor.name}</h3>
-                        <Badge variant={sponsor.isActive ? "default" : "secondary"}>
-                          {sponsor.isActive ? "Active" : "Inactive"}
-                        </Badge>
-                        <Badge variant="outline">Order: {sponsor.displayOrder}</Badge>
-                      </div>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {sponsor.linkUrl}
-                      </p>
-                      {sponsor.displayText && (
-                        <p className="text-sm text-gray-500">
-                          Display: "{sponsor.displayText}"
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Switch
-                        checked={sponsor.isActive}
-                        onCheckedChange={(checked) => handleToggleSponsor(sponsor._id, checked)}
-                      />
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setEditingSponsor(sponsor)}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeleteSponsor(sponsor._id)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
+
+            <div className="space-y-5">
+              <label htmlFor="stream-description">
+                Stream Description
+              </label>
+              <Textarea
+                id="stream-description"
+                placeholder="Leave empty for placeholder"
+                value={streamDescription}
+                onChange={(e) => setStreamDescription(e.target.value)}
+                disabled={isUpdatingInfo}
+                rows={3}
+              />
+            </div>
+
+            <div className="flex gap-5">
+              <Button 
+                onClick={handleUpdateStreamInfo}
+                disabled={isUpdatingInfo}
+                className="w-full"
+              >
+                {isUpdatingInfo ? "Updating..." : "Update"}
+              </Button>
+              <Button 
+                onClick={handleClearStreamInfo}
+                disabled={isUpdatingInfo}
+                variant="outline"
+              >
+                Clear
+              </Button>
+            </div>
+          </div>
+
+          <table className="text-muted-foreground w-fit" cellPadding="0" cellSpacing="0">
+            <tbody>
+              <tr>
+                <td className="pr-15 flex-1">Title:{"\u0020"}</td>
+                <td className="pr-15 flex-1">
+                  {currentStreamInfo?.title || "—"}
+                </td>
+              </tr>
+              <tr>
+                <td className="pr-15 flex-1">Description:{"\u0020"}</td>
+                <td className="pr-15 flex-1">
+                  {currentStreamInfo?.description || "—"}
+                </td>
+              </tr>
+              <tr>
+                <td className="pr-15 flex-1">Last updated:{"\u0020"}</td>
+                <td className="pr-15 flex-1">
+                  {currentStreamInfo?.timestamp 
+                    ? new Date(currentStreamInfo?.timestamp).toLocaleString().replace(',', '')
+                    : "—"
+                  }
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="flex flex-col gap-15 border-l pl-15">
+          <h2>Sp0nsors</h2>
+
+          {sponsors.sort((a, b) => a.displayOrder - b.displayOrder).map((sponsor, i) => (
+            <div key={sponsor._id} className="flex gap-15">
+              <p>{i + 1}.</p>
+              <div className="flex justify-between gap-15 w-full">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3">
+                    <h3 className="font-medium">{sponsor.name}</h3>
+                    <p className="text-muted-foreground">[Order: {sponsor.displayOrder}]</p>
                   </div>
-                ))}
+                  <p className="text-muted-foreground">
+                    {sponsor.linkUrl}
+                  </p>
+                  {sponsor.displayText && (
+                    <p className="text-muted-foreground">
+                      Display: "{sponsor.displayText}"
+                    </p>
+                  )}
+                </div>
+                <div className="flex space-x-10">
+                  <div className="flex space-x-5">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteSponsor(sponsor._id)}
+                    >
+                      <Trash />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setEditingSponsor(sponsor)}
+                    >
+                      <Pencil />
+                    </Button>
+                  </div>
+                  <Switch
+                    checked={sponsor.isActive}
+                    onCheckedChange={(checked) => handleToggleSponsor(sponsor._id, checked)}
+                  />
+                </div>
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </div>
+          ))}
+
+          <Button onClick={() => setShowAddForm(true)}>
+            <Plus />
+          </Button>
+        </div>
+
+        <div className="flex flex-col gap-5">
+          <h2>YouTube Preview</h2>
+          <div 
+            className="relative flex w-full overflow-hidden flex-shrink-0" 
+            style={{ aspectRatio: '16/9' }}
+          >
+            <iframe
+              className="absolute top-0 left-0 w-full h-full"
+              src="https://www.youtube.com/embed/live_stream?channel=UCbEmN5Nw2p6yFsaak0sHPpg"
+              allowFullScreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            />
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -364,33 +473,33 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-custom-dark-gray flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Admin Access</CardTitle>
-          <CardDescription>Enter the admin password to continue</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading}
-                required
-              />
-            </div>
-            {error && (
-              <p className="text-sm text-red-500">{error}</p>
-            )}
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Authenticating..." : "Access Admin"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+    <div className="min-h-screen bg-background flex items-center justify-center uppercase">
+      <div className="w-full max-w-sm p-15 space-y-5">
+        <div className="space-y-5">
+          <h1 className="text-15 font-extrabold">Admin Access</h1>
+          <p className="text-muted-foreground">Enter the admin password to continue</p>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-10">
+          <div>
+            <Input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
+              autoFocus
+              required
+            />
+          </div>
+          {error && (
+            <p className="text-sm text-destructive">{error}</p>
+          )}
+          <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+            {isLoading ? "Authenticating..." : "Enter"}
+            <TriangleRightIcon className="size-12" />
+          </Button>
+        </form>
+      </div>
     </div>
   )
-} 
+}

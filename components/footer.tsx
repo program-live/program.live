@@ -1,35 +1,42 @@
-"use client";
-
 import Link from "next/link";
 import ScrollingText from "./scrolling-text";
 
-// Different language translations
+// Different language translations of concatenated offline messages
 const translations = [
-  { lang: "EN", text: "broadcasting live global to all for your entertainment" },
-  { lang: "ES", text: "transmitiendo en vivo global a todos para tu entretenimiento" },
-  { lang: "FR", text: "diffusion en direct mondiale à tous pour votre divertissement" },
-  { lang: "DE", text: "weltweit live für alle zu ihrer unterhaltung" },
-  { lang: "IT", text: "trasmissione in diretta globale a tutti per il vostro intrattenimento" },
-  { lang: "PT", text: "transmitindo ao vivo global para todos para seu entretenimento" },
-  { lang: "JA", text: "あなたのエンターテイメントのために世界中にライブ配信" },
-  { lang: "ZH", text: "为您的娱乐向全球直播" },
-  { lang: "RU", text: "вещание в прямом эфире по всему миру для вашего развлечения" },
-  { lang: "AR", text: "البث المباشر العالمي للجميع من أجل ترفيهك" },
-  { lang: "NL", text: "wereldwijd live uitzenden voor iedereen voor uw entertainment" },
-  { lang: "KO", text: "당신의 엔터테인먼트를 위해 전 세계에 라이브 방송" }
+  { lang: "EN", text: ["SEE YOU SPACE COWBOY", "EASY COME, EASY GO", "ARE YOU LIVING IN THE REAL WORLD?", "LIFE IS BUT A DREAM"] },
+  { lang: "ES", text: ["NOS VEMOS VAQUERO ESPACIAL", "FÁCIL VIENE, FÁCIL SE VA", "¿ESTÁS VIVIENDO EN EL MUNDO REAL?", "LA VIDA NO ES MÁS QUE UN SUEÑO"] },
+  { lang: "FR", text: ["À BIENTÔT COWBOY DE L'ESPACE", "FACILE À VENIR, FACILE À PARTIR", "VIS-TU DANS LE MONDE RÉEL?", "LA VIE N'EST QU'UN RÊVE"] },
+  { lang: "DE", text: ["BIS DANN WELTRAUM-COWBOY", "LEICHT GEKOMMEN, LEICHT GEGANGEN", "LEBST DU IN DER REALEN WELT?", "DAS LEBEN IST NUR EIN TRAUM"] },
+  { lang: "IT", text: ["CI VEDIAMO COWBOY SPAZIALE", "FACILE VENIRE, FACILE ANDARE", "STAI VIVENDO NEL MONDO REALE?", "LA VITA NON È CHE UN SOGNO"] },
+  { lang: "PT", text: ["NOS VEMOS COWBOY ESPACIAL", "FÁCIL VEM, FÁCIL VAI", "VOCÊ ESTÁ VIVENDO NO MUNDO REAL?", "A VIDA NÃO PASSA DE UM SONHO"] },
+  { lang: "JA", text: ["また会おうスペースカウボーイ", "楽に来て、楽に行く", "君は現実の世界に生きているのか？", "人生は夢に過ぎない"] },
+  { lang: "ZH", text: ["再见太空牛仔", "来得容易，去得容易", "你生活在现实世界中吗？", "人生不过是一场梦"] },
+  { lang: "RU", text: ["УВИДИМСЯ КОСМИЧЕСКИЙ КОВБОЙ", "ЛЕГКО ПРИШЛО, ЛЕГКО УШЛО", "ТЫ ЖИВЕШЬ В РЕАЛЬНОМ МИРЕ?", "ЖИЗНЬ ВСЕГО ЛИШЬ СОН"] },
+  { lang: "AR", text: ["أراك أيها الرعاة الفضائي", "سهل المجيء، سهل الذهاب", "هل تعيش في العالم الحقيقي؟", "الحياة ليست سوى حلم"] },
+  { lang: "NL", text: ["TOT ZIENS RUIMTE COWBOY", "MAKKELIJK KOMEN, MAKKELIJK GAAN", "LEEF JE IN DE ECHTE WERELD?", "HET LEVEN IS SLECHTS EEN DROOM"] },
+  { lang: "KO", text: ["또 보자 우주 카우보이", "쉽게 와서,쉽게 가고", "너는 현실 세계에 살고 있나?", "인생은 꿈일 뿐"] }
 ];
 
 export default function Footer() {
   return (
     <>
-      {/* Footer Spacer */}
-      <div className="h-[45px]"></div>
+      {/* Spacer */}
+      <div className="h-45"></div>
 
       {/* Footer */}
-      <div className="fixed bottom-0 inset-x-0 grid grid-cols-12 h-[45px] bg-black z-50">
-        {/* Scrolling Sponsor Banner */}
-        <Link href="https://market.dev" target="_blank" className="relative h-[15px] shrink-0 col-span-full font-extrabold hover:bg-white hover:text-black">
-          <ScrollingText direction="right" speed={1000} className="h-full items-center">
+      <div className="fixed bottom-0 inset-x-0 grid grid-cols-12 h-45 bg-background z-50">
+        {/* Scrolling Sponsor */}
+        <Link 
+          href="https://market.dev" 
+          target="_blank" 
+          className="relative h-15 shrink-0 col-span-full font-extrabold hover:bg-primary hover:text-primary-foreground"
+        >
+          <ScrollingText 
+            direction="right" 
+            speed={1000} 
+            className="h-full items-center" 
+            aria-hidden
+          >
             {[...Array(50)].map((_, i) => (
               <span key={i}>
                 MARKET.DEV: THE EASIEST WAY TO SELL DEVEL0PER SERVICES <span className="align-[1px]">◉</span>{'\u00A0'}
@@ -38,6 +45,8 @@ export default function Footer() {
           </ScrollingText>
           <span className="sr-only">Market.dev: the easiest way to sell developer services</span>
         </Link>
+
+        {/* Scrolling Languages */}
         {translations.map((translation, i) => {
           // First row (0-5): odd indexes scroll left, even scroll right
           // Second row (6-11): even indexes scroll left, odd scroll right
@@ -45,17 +54,18 @@ export default function Footer() {
           const shouldScrollLeft = isFirstRow ? i % 2 === 0 : i % 2 === 1;
           
           return (
-            <div key={i} className="col-span-2 h-[15px] relative opacity-60">
+            <div key={i} className="col-span-2 h-15 relative text-muted-foreground">
               <ScrollingText 
                 direction={shouldScrollLeft ? 'left' : 'right'} 
-                speed={80 + i * 5} 
+                speed={1200 + i * 80} 
                 className="h-full items-center"
+                aria-hidden
               >
                 {[...Array(10)].map((_, i) => (
-                  <span key={i} className="text-[10px]">{translation.text}{'\u00A0'}</span>
+                  <span key={i} className="text-10">{translation.text.join(" ")}{'\u00A0'}</span>
                 ))}
               </ScrollingText>
-              <span className="sr-only">{translation.text}</span>
+              <span className="sr-only">{translation.text.join(' ')}</span>
             </div>
           );
         })}

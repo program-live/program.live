@@ -37,11 +37,11 @@ interface WarpEffectProps {
 export default function WarpEffect({
   width,
   height,
-  maxWidth = 400,
-  maxHeight = 200,
-  particleCount = 800,
+  maxWidth = 300,
+  maxHeight = 120,
+  particleCount = 300,
   particleBrightness = 0.8,
-  warpBrightness = 0.5,
+  warpBrightness = 1,
   className = "",
   children
 }: WarpEffectProps) {
@@ -57,7 +57,7 @@ export default function WarpEffect({
     mousePos: { x: 0, y: 0 } as MousePos,
     center: { x: 0, y: 0 },
     rotationSpeed: -0.5,
-    rotationSpeedFactor: { x: 0, y: 0 },
+    // rotationSpeedFactor was unused – removed to simplify state
     fov: 300,
     fovMin: 210,
     fovMax: 300,
@@ -97,20 +97,13 @@ export default function WarpEffect({
     return () => window.removeEventListener("resize", handleResize)
   }, [width, height, maxWidth, maxHeight])
 
-  // Update particle count when prop changes
+  // Sync dynamic props to the animation state
   useEffect(() => {
-    stateRef.current.starHolderCount = particleCount
-  }, [particleCount])
-
-  // Update brightness when prop changes
-  useEffect(() => {
-    stateRef.current.brightness = particleBrightness
-  }, [particleBrightness])
-
-  // Update warp brightness when prop changes
-  useEffect(() => {
-    stateRef.current.warpBrightness = warpBrightness
-  }, [warpBrightness])
+    const state = stateRef.current
+    state.starHolderCount = particleCount
+    state.brightness = particleBrightness
+    state.warpBrightness = warpBrightness
+  }, [particleCount, particleBrightness, warpBrightness])
 
   // Initialize canvas and particles
   useEffect(() => {
@@ -128,8 +121,7 @@ export default function WarpEffect({
     state.ctx = ctx
     state.center = { x: dimensions.width / 2, y: dimensions.height / 2 }
     state.mousePos = { x: state.center.x, y: state.center.y }
-    state.rotationSpeedFactor.x = state.rotationSpeed / state.center.x
-    state.rotationSpeedFactor.y = state.rotationSpeed / state.center.y
+    // rotationSpeedFactor was unused – removed to simplify state
 
     // Initialize image data
     state.imageData = ctx.getImageData(0, 0, dimensions.width, dimensions.height)
@@ -208,16 +200,10 @@ export default function WarpEffect({
     }
   }
 
+  // Faster zero-fill since background is fully transparent black
   const clearImageData = () => {
-    const state = stateRef.current
-    if (!state.pix) return
-
-    for (let i = 0, l = state.pix.length; i < l; i += 4) {
-      state.pix[i] = state.backgroundColor.r
-      state.pix[i + 1] = state.backgroundColor.g
-      state.pix[i + 2] = state.backgroundColor.b
-      state.pix[i + 3] = state.backgroundColor.a
-    }
+    const { pix } = stateRef.current
+    if (pix) pix.fill(0)
   }
 
   const setPixel = (x: number, y: number, r: number, g: number, b: number, a: number) => {
@@ -411,32 +397,20 @@ export default function WarpEffect({
     }
   }
 
-  const handleMouseEnter = () => {
-    stateRef.current.mouseActive = true
-  }
-
-  const handleMouseLeave = () => {
-    stateRef.current.mouseActive = false
-    stateRef.current.mouseDown = false
-  }
-
-  const handleMouseDown = () => {
-    stateRef.current.mouseDown = true
-  }
-
-  const handleMouseUp = () => {
-    stateRef.current.mouseDown = false
-  }
-
+  // Inline trivial mouse handlers in JSX to reduce boilerplate
   return (
     <div
       ref={containerRef}
       className={`relative overflow-hidden w-full h-full ${className}`}
       onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
+      onMouseEnter={() => (stateRef.current.mouseActive = true)}
+      onMouseLeave={() => {
+        const state = stateRef.current
+        state.mouseActive = false
+        state.mouseDown = false
+      }}
+      onMouseDown={() => (stateRef.current.mouseDown = true)}
+      onMouseUp={() => (stateRef.current.mouseDown = false)}
     >
       <canvas
         ref={canvasRef}

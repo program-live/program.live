@@ -13,9 +13,15 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as sampleSponsors from "../sampleSponsors.js";
+import type * as crons from "../crons.js";
+import type * as news from "../news.js";
+import type * as quotes from "../quotes.js";
+import type * as repos from "../repos.js";
+import type * as samples_sampleSponsors from "../samples/sampleSponsors.js";
 import type * as sponsors from "../sponsors.js";
+import type * as streamInfo from "../streamInfo.js";
 import type * as streamStatus from "../streamStatus.js";
+import type * as weather from "../weather.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -26,9 +32,15 @@ import type * as streamStatus from "../streamStatus.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  sampleSponsors: typeof sampleSponsors;
+  crons: typeof crons;
+  news: typeof news;
+  quotes: typeof quotes;
+  repos: typeof repos;
+  "samples/sampleSponsors": typeof samples_sampleSponsors;
   sponsors: typeof sponsors;
+  streamInfo: typeof streamInfo;
   streamStatus: typeof streamStatus;
+  weather: typeof weather;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

@@ -15,7 +15,6 @@ export default function ScrollingText({
   speed = 100, 
   className = ''
 }: ScrollingTextProps) {
-  // Create the animation classes based on direction
   const animationClass = direction === 'left' ? 'scroll-left' : 'scroll-right';
   
   return (

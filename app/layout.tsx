@@ -10,7 +10,7 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PROGRAM.LIVE - BROADCAST NETWORK",
+  title: "PROGRAM.LIVE",
   description: "Live broadcasting to the world",
 };
 
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${jetBrainsMono.variable} antialiased text-[10px]/[15px] bg-black text-white`}
+        className={`${jetBrainsMono.variable} antialiased text-10 leading-15 bg-background text-foreground`}
       >
         <ConvexClientProvider>
           {children}
