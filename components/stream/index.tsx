@@ -28,8 +28,8 @@ export default async function StreamSection() {
               </h2>
             </div>
 
-            <div className='flex flex-row items-center sm:flex-row-reverse w-full sm:w-fit border-t sm:border-t-0 border-dotted sm:border-l'>
-              <Button size='lg' variant='outline' className='w-full sm:w-fit h-full min-h-[25px] border-0' asChild>
+            <div className='flex flex-row items-center sm:flex-row-reverse w-full sm:w-fit border-t sm:border-t-0 border-dotted sm:border-l h-full'>
+              <Button size='lg' className='w-full sm:w-fit h-full min-h-[25px] border-0 sm:rounded-tr-[3px]' asChild>
                 <Link href="https://www.youtube.com/@PROGRAMISLIVE">
                   <span className="sr-only">Subscribe</span>
                   <span className='text-[12px] leading-10 mb-1 mr-5'>⏵</span>
@@ -38,7 +38,7 @@ export default async function StreamSection() {
                 </Link>
               </Button>
 
-              <span className='border-l border-dotted h-25' />
+              <span className='border-l border-foreground min-h-[25px] h-full' />
 
               <Button size='lg' variant='outline' className='w-full sm:w-fit h-full min-h-[25px] border-0 ' asChild>
                 <Link href="https://lu.ma/program?k=c&period=past">
