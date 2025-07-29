@@ -48,7 +48,7 @@ export const createSponsor = mutation({
     name: v.string(),
     logoUrl: v.optional(v.string()),
     linkUrl: v.string(),
-    displayText: v.string(),
+    displayText: v.optional(v.string()),
     displayOrder: v.number(),
     isActive: v.boolean(),
   },

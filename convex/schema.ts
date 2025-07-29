@@ -30,7 +30,7 @@ export default defineSchema({
     name: v.string(),
     logoUrl: v.optional(v.string()), // URL to sponsor logo
     linkUrl: v.string(), // URL sponsor links to
-    displayText: v.string(), // Now required - text to display (alt text for logos or primary text)
+    displayText: v.optional(v.string()), // Now optional - text to display (alt text for logos or primary text)
     displayOrder: v.number(), // Order to display sponsors
     isActive: v.boolean(), // Whether sponsor should be shown
     createdAt: v.number(),

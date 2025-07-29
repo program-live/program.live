@@ -108,13 +108,12 @@ function SponsorForm({ sponsor = null, onSave, onCancel }: {
         </div>
         
         <div>
-          <Label htmlFor="displayText">Display Text<span className="text-destructive align-super">*</span></Label>
+          <Label htmlFor="displayText">Display Text</Label>
           <Input
             id="displayText"
             value={formData.displayText}
             onChange={(e) => setFormData(prev => ({ ...prev, displayText: e.target.value }))}
-            placeholder="Alt text for logos or primary display text"
-            required
+            placeholder="Alt text for logos or primary display text (optional - defaults to sponsor name)"
           />
         </div>
         

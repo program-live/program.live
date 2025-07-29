@@ -62,11 +62,11 @@ export default function SponsorCards({ sponsors }: { sponsors: Doc<"sponsors">[]
               {sponsor.logoUrl ? (
                 <Image 
                   src={sponsor.logoUrl} 
-                  alt={sponsor.name} 
+                  alt={sponsor.displayText || sponsor.name} 
                   width={120} 
                   height={60} 
                   className="max-h-[20px] md:max-h-[25px] w-auto h-full cursor-pointer group-hover:opacity-70" 
-                  priority={index === 0} // Only prioritize first image
+                  priority
                 />
               ) : (
                 <span 

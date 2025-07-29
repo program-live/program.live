@@ -7,7 +7,7 @@ export default async function SponsorBanner() {
   const bannerSponsors = await fetchQuery(api.sponsors.getActiveSponsorsByPlacement, { placement: "banner" });
 
   const bannerSponsor = bannerSponsors?.[0];
-  const displayText = bannerSponsor?.displayText || "SPONSOR THIS SPOT";
+  const displayText = bannerSponsor?.displayText || bannerSponsor?.name || "SPONSOR THIS SPOT";
   const linkUrl = bannerSponsor?.linkUrl || "https://app.market.dev/checkout/cmdg4lrpa0001l10acbshoc4k";
   
   return (
