@@ -41,7 +41,7 @@ export default function Sponsors({ sponsors }: { sponsors: Doc<"sponsors">[] }) 
   const sponsorsToShow = displaySponsors.slice(0, 4);
 
   return (
-    <div className="flex-1 flex items-end min-h-[120px] md:min-h-[90px] max-h-[120px] xl:max-h-[149px]">
+    <div className="flex-1 flex items-end min-h-[120px] md:min-h-[90px] max-h-[120px] xl:max-h-none">
       <div className="relative grid grid-cols-2 md:grid-cols-4 h-full border-t border-dotted w-full border-l">
         <h2 aria-hidden className="absolute text-center -top-5 -left-3 bg-background z-[1] px-2">SP0NSORS</h2>
         <span className="sr-only">Sponsors</span>
