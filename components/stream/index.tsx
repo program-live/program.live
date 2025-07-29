@@ -30,7 +30,7 @@ export default async function StreamSection() {
 
             <div className='flex flex-row-reverse items-center w-full md:w-fit border-t md:border-t-0 border-dotted md:border-l h-full'>
               <Button size='lg' className='w-full md:w-fit h-full min-h-[25px] border-0 md:rounded-tr-[3px]' asChild>
-                <Link href="https://www.youtube.com/@PROGRAMISLIVE">
+                <Link href="https://www.youtube.com/@PROGRAMISLIVE" target='_blank'>
                   <span className="sr-only">Subscribe to Livestream</span>
                   <span className='text-[12px] leading-10 mb-1 mr-5'>⏵</span>
                   {"\u0020"}
@@ -41,7 +41,7 @@ export default async function StreamSection() {
               <span className='border-l border-foreground min-h-[25px] h-full' />
 
               <Button size='lg' variant='outline' className='w-full md:w-fit h-full min-h-[25px] border-0 ' asChild>
-                <Link href="https://lu.ma/program?k=c&period=past">
+                <Link href="https://lu.ma/program?k=c&period=past" target='_blank'>
                   <span className="sr-only">Join in-person</span>
                   <span className='text-15 leading-10 mb-3 mr-4'>✦</span>
                   {"\u0020"}
