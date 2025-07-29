@@ -16,7 +16,7 @@ export default async function StreamSection() {
       <div className="flex flex-col justify-end h-full">
         <div className='flex flex-col border-t border-r rounded-tr'>
           
-          <div className="flex flex-col gap-x-15 sm:flex-row items-center ">
+          <div className="flex flex-col gap-x-15 md:flex-row items-center ">
             <div className='flex items-center py-5 w-full'>
               <h2 className="text-15 leading-15">{
                 currentStreamInfo?.title || (
@@ -28,19 +28,19 @@ export default async function StreamSection() {
               </h2>
             </div>
 
-            <div className='flex flex-row items-center sm:flex-row-reverse w-full sm:w-fit border-t sm:border-t-0 border-dotted sm:border-l h-full'>
-              <Button size='lg' className='w-full sm:w-fit h-full min-h-[25px] border-0 sm:rounded-tr-[3px]' asChild>
+            <div className='flex flex-row-reverse items-center w-full md:w-fit border-t md:border-t-0 border-dotted md:border-l h-full'>
+              <Button size='lg' className='w-full md:w-fit h-full min-h-[25px] border-0 md:rounded-tr-[3px]' asChild>
                 <Link href="https://www.youtube.com/@PROGRAMISLIVE">
-                  <span className="sr-only">Subscribe</span>
+                  <span className="sr-only">Subscribe to Livestream</span>
                   <span className='text-[12px] leading-10 mb-1 mr-5'>⏵</span>
                   {"\u0020"}
-                  <span aria-hidden>SUBSCRIBE</span>
+                  <span aria-hidden>SUBSCRIBE T0 LIVESTREAM</span>
                 </Link>
               </Button>
 
               <span className='border-l border-foreground min-h-[25px] h-full' />
 
-              <Button size='lg' variant='outline' className='w-full sm:w-fit h-full min-h-[25px] border-0 ' asChild>
+              <Button size='lg' variant='outline' className='w-full md:w-fit h-full min-h-[25px] border-0 ' asChild>
                 <Link href="https://lu.ma/program?k=c&period=past">
                   <span className="sr-only">Join in-person</span>
                   <span className='text-15 leading-10 mb-3 mr-4'>✦</span>
