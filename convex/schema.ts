@@ -35,10 +35,7 @@ export default defineSchema({
     isActive: v.boolean(), // Whether sponsor should be shown
     createdAt: v.number(),
     updatedAt: v.number(),
-  }).index("by_display_order", ["displayOrder"])
-    .index("by_active", ["isActive"])
-    .index("by_active_placement", ["isActive", "placement"]) // New index for filtering by placement
-    .index("by_placement_order", ["placement", "displayOrder"]), // New index for ordering within placement
+  }),
 
   repos: defineTable({
     title: v.string(),
