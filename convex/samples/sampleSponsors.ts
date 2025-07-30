@@ -11,50 +11,29 @@ export const populateSampleSponsors = mutation({
     }
 
     const now = Date.now();
+
+    const sponsorTemplate = {
+      placement: "card" as const,
+      name: "Available Spot",
+      linkUrl: "https://app.market.dev/checkout/cmdg4lrpa0001l10acbshoc4k",
+      displayText: "BUY SPOT",
+      isActive: true,
+      createdAt: now,
+      updatedAt: now,
+    }
     
     // Sample sponsors
     const sampleSponsors = [
-      {
-        placement: "card" as const,
-        name: "market.dev",
-        logoUrl: "/market-dot-dev-logo-white.svg",
-        linkUrl: "https://app.market.dev/checkout/cmdg4lrpa0001l10acbshoc4k",
-        displayText: "market.dev",
-        displayOrder: 1,
-        isActive: true,
-        createdAt: now,
-        updatedAt: now,
+      { 
+        ...sponsorTemplate, 
+        name: "market.dev", 
+        logoUrl: "/market-dot-dev-logo-white.svg", 
+        linkUrl: "https://market.dev",
+        displayOrder: 1 
       },
-      {
-        placement: "card" as const,
-        name: "Available Spot",
-        linkUrl: "https://app.market.dev/checkout/cmdg4lrpa0001l10acbshoc4k",
-        displayText: "BUY SPOT",
-        displayOrder: 2,
-        isActive: true,
-        createdAt: now,
-        updatedAt: now,
-      },
-      {
-        placement: "card" as const,
-        name: "Available Spot",
-        linkUrl: "https://app.market.dev/checkout/cmdg4lrpa0001l10acbshoc4k",
-        displayText: "BUY SPOT",
-        displayOrder: 3,
-        isActive: true,
-        createdAt: now,
-        updatedAt: now,
-      },
-      {
-        placement: "card" as const,
-        name: "Available Spot",
-        linkUrl: "https://app.market.dev/checkout/cmdg4lrpa0001l10acbshoc4k",
-        displayText: "BUY SPOT",
-        displayOrder: 4,
-        isActive: true,
-        createdAt: now,
-        updatedAt: now,
-      }
+      { ...sponsorTemplate, displayOrder: 2 },
+      { ...sponsorTemplate, displayOrder: 3 },
+      { ...sponsorTemplate, displayOrder: 4 },
     ];
 
     // Insert all sponsors
