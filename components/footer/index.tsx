@@ -1,7 +1,7 @@
-import Link from "next/link";
-import ScrollingText from "./scrolling-text";
+import ScrollingText from "../scrolling-text";
+import SponsorBanner from "./sponsor-banner";
 
-// Different language translations of concatenated offline messages
+// Different language translations for scrolling text
 const translations = [
   { lang: "EN", text: ["SEE YOU SPACE COWBOY", "EASY COME, EASY GO", "ARE YOU LIVING IN THE REAL WORLD?", "LIFE IS BUT A DREAM"] },
   { lang: "ES", text: ["NOS VEMOS VAQUERO ESPACIAL", "FÁCIL VIENE, FÁCIL SE VA", "¿ESTÁS VIVIENDO EN EL MUNDO REAL?", "LA VIDA NO ES MÁS QUE UN SUEÑO"] },
@@ -20,33 +20,11 @@ const translations = [
 export default function Footer() {
   return (
     <>
-      {/* Spacer */}
-      <div className="h-45"></div>
+      <div className="h-45"></div> {/* Spacer */}
 
-      {/* Footer */}
       <div className="fixed bottom-0 inset-x-0 grid grid-cols-12 h-45 bg-background z-50">
-        {/* Scrolling Sponsor */}
-        <Link 
-          href="https://market.dev" 
-          target="_blank" 
-          className="relative h-15 shrink-0 col-span-full font-extrabold hover:bg-primary hover:text-primary-foreground"
-        >
-          <ScrollingText 
-            direction="right" 
-            speed={1000} 
-            className="h-full items-center" 
-            aria-hidden
-          >
-            {[...Array(50)].map((_, i) => (
-              <span key={i}>
-                MARKET.DEV: THE EASIEST WAY TO SELL DEVEL0PER SERVICES <span className="align-[1px]">◉</span>{'\u00A0'}
-              </span>
-            ))}
-          </ScrollingText>
-          <span className="sr-only">Market.dev: the easiest way to sell developer services</span>
-        </Link>
-
-        {/* Scrolling Languages */}
+        <SponsorBanner />
+        
         {translations.map((translation, i) => {
           // First row (0-5): odd indexes scroll left, even scroll right
           // Second row (6-11): even indexes scroll left, odd scroll right

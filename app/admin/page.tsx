@@ -18,13 +18,13 @@ function SponsorForm({ sponsor = null, onSave, onCancel }: {
   onCancel: () => void 
 }) {
   const [formData, setFormData] = useState({
+    placement: sponsor?.placement || "card",
     name: sponsor?.name || "",
     logoUrl: sponsor?.logoUrl || "",
     linkUrl: sponsor?.linkUrl || "",
     displayText: sponsor?.displayText || "",
     displayOrder: sponsor?.displayOrder || 1,
-    isActive: sponsor?.isActive ?? true,
-    paddingClass: sponsor?.paddingClass || "px-[30px]"
+    isActive: sponsor?.isActive ?? true
   })
   
   const createSponsor = useMutation(api.sponsors.createSponsor)
@@ -62,6 +62,20 @@ function SponsorForm({ sponsor = null, onSave, onCancel }: {
       </div>
       <form onSubmit={handleSubmit} className="space-y-10">
         <div>
+          <Label htmlFor="placement">Placement<span className="text-destructive align-super">*</span></Label>
+          <select
+            id="placement"
+            value={formData.placement}
+            onChange={(e) => setFormData(prev => ({ ...prev, placement: e.target.value as "card" | "banner" }))}
+            className="flex h-20 w-full border border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            required
+          >
+            <option value="card">Card (Stream Section)</option>
+            <option value="banner">Banner (Footer)</option>
+          </select>
+        </div>
+        
+        <div>
           <Label htmlFor="name">Sponsor Name<span className="text-destructive align-super">*</span></Label>
           <Input
             id="name"
@@ -94,12 +108,12 @@ function SponsorForm({ sponsor = null, onSave, onCancel }: {
         </div>
         
         <div>
-          <Label htmlFor="displayText">Display Text (if no logo)</Label>
+          <Label htmlFor="displayText">Display Text</Label>
           <Input
             id="displayText"
             value={formData.displayText}
             onChange={(e) => setFormData(prev => ({ ...prev, displayText: e.target.value }))}
-            placeholder="Text to show if no logo provided"
+            placeholder="Alt text for logos or primary display text (optional - defaults to sponsor name)"
           />
         </div>
         
@@ -114,15 +128,7 @@ function SponsorForm({ sponsor = null, onSave, onCancel }: {
           />
         </div>
         
-        <div>
-          <Label htmlFor="paddingClass">Padding Class</Label>
-          <Input
-            id="paddingClass"
-            value={formData.paddingClass}
-            onChange={(e) => setFormData(prev => ({ ...prev, paddingClass: e.target.value }))}
-            placeholder="e.g., px-[30px] or px-[15px] sm:px-[30px]"
-          />
-        </div>
+        {/* Padding Class field removed */}
         
         <div className="flex items-center space-x-10 py-10">
           <Switch
@@ -273,8 +279,8 @@ function AdminDashboard() {
           <table className="text-muted-foreground w-fit" cellPadding="0" cellSpacing="0">
             <tbody>
               <tr>
-                <td className="pr-15 flex-1">Stream started:{"\u0020"}</td>
-                <td className="pr-15 flex-1">
+                <td className="pr-15 w-80">Started:</td>
+                <td>
                   {(currentStatus.isLive && currentStatus.startedAt) ? (
                     new Date(currentStatus.startedAt).toLocaleString().replace(',', '')
                   ) : (
@@ -283,8 +289,8 @@ function AdminDashboard() {
                 </td>
               </tr>
               <tr>
-                <td className="pr-15 flex-1">Last updated:{"\u0020"}</td>
-                <td className="pr-15 flex-1">{new Date(currentStatus.timestamp).toLocaleString().replace(',', '')}</td>
+                <td className="pr-15 w-80">Updated:</td>
+                <td>{new Date(currentStatus.timestamp).toLocaleString().replace(',', '')}</td>
               </tr>
             </tbody>
           </table>
@@ -340,20 +346,20 @@ function AdminDashboard() {
           <table className="text-muted-foreground w-fit" cellPadding="0" cellSpacing="0">
             <tbody>
               <tr>
-                <td className="pr-15 flex-1">Title:{"\u0020"}</td>
-                <td className="pr-15 flex-1">
+                <td className="pr-15 w-80">Title:</td>
+                <td>
                   {currentStreamInfo?.title || "—"}
                 </td>
               </tr>
               <tr>
-                <td className="pr-15 flex-1">Description:{"\u0020"}</td>
-                <td className="pr-15 flex-1">
+                <td className="pr-15 w-80">Description:</td>
+                <td>
                   {currentStreamInfo?.description || "—"}
                 </td>
               </tr>
               <tr>
-                <td className="pr-15 flex-1">Last updated:{"\u0020"}</td>
-                <td className="pr-15 flex-1">
+                <td className="pr-15 w-80">Updated:</td>
+                <td>
                   {currentStreamInfo?.timestamp 
                     ? new Date(currentStreamInfo?.timestamp).toLocaleString().replace(',', '')
                     : "—"
@@ -372,18 +378,29 @@ function AdminDashboard() {
               <p>{i + 1}.</p>
               <div className="flex justify-between gap-15 w-full">
                 <div className="flex-1">
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center gap-5">
                     <h3 className="font-medium">{sponsor.name}</h3>
-                    <p className="text-muted-foreground">[Order: {sponsor.displayOrder}]</p>
                   </div>
-                  <p className="text-muted-foreground">
-                    {sponsor.linkUrl}
-                  </p>
-                  {sponsor.displayText && (
-                    <p className="text-muted-foreground">
-                      Display: "{sponsor.displayText}"
-                    </p>
-                  )}
+                  <table className="text-muted-foreground" cellPadding="0" cellSpacing="0">
+                    <tbody>
+                      <tr>
+                        <td className="pr-15 w-80">Placement:</td>
+                        <td>{sponsor.placement}</td>
+                      </tr>
+                      <tr>
+                        <td className="pr-15 w-80">URL:</td>
+                        <td>{sponsor.linkUrl}</td>
+                      </tr>
+                      <tr>
+                        <td className="pr-15 w-80">Logo URL:</td>
+                        <td>{sponsor.logoUrl || "—"}</td>
+                      </tr>
+                      <tr>
+                        <td className="pr-15 w-80">Order:</td>
+                        <td>{sponsor.displayOrder}</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
                 <div className="flex space-x-10">
                   <div className="flex space-x-5">

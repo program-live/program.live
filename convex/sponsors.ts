@@ -7,7 +7,24 @@ export const getActiveSponsors = query({
   handler: async (ctx) => {
     return await ctx.db
       .query("sponsors")
-      .withIndex("by_active", (q) => q.eq("isActive", true))
+      .filter((q) => q.eq(q.field("isActive"), true))
+      .order("asc")
+      .collect();
+  },
+});
+
+// Get active sponsors by placement
+export const getActiveSponsorsByPlacement = query({
+  args: {
+    placement: v.union(v.literal("card"), v.literal("banner")),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("sponsors")
+      .filter((q) => q.and(
+        q.eq(q.field("isActive"), true),
+        q.eq(q.field("placement"), args.placement)
+      ))
       .order("asc")
       .collect();
   },
@@ -19,7 +36,6 @@ export const getAllSponsors = query({
   handler: async (ctx) => {
     return await ctx.db
       .query("sponsors")
-      .withIndex("by_display_order")
       .order("asc")
       .collect();
   },
@@ -28,13 +44,13 @@ export const getAllSponsors = query({
 // Create a new sponsor
 export const createSponsor = mutation({
   args: {
+    placement: v.union(v.literal("card"), v.literal("banner")),
     name: v.string(),
     logoUrl: v.optional(v.string()),
     linkUrl: v.string(),
     displayText: v.optional(v.string()),
     displayOrder: v.number(),
     isActive: v.boolean(),
-    paddingClass: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const now = Date.now();
@@ -51,13 +67,13 @@ export const createSponsor = mutation({
 export const updateSponsor = mutation({
   args: {
     id: v.id("sponsors"),
+    placement: v.optional(v.union(v.literal("card"), v.literal("banner"))),
     name: v.optional(v.string()),
     logoUrl: v.optional(v.string()),
     linkUrl: v.optional(v.string()),
     displayText: v.optional(v.string()),
     displayOrder: v.optional(v.number()),
     isActive: v.optional(v.boolean()),
-    paddingClass: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
@@ -100,4 +116,4 @@ export const toggleSponsorStatus = mutation({
       updatedAt: Date.now(),
     });
   },
-}); 
+});
