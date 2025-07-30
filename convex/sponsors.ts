@@ -117,32 +117,3 @@ export const toggleSponsorStatus = mutation({
     });
   },
 });
-
-// Migration: Backfill existing sponsors with placement='card'
-export const backfillSponsorPlacements = mutation({
-  args: {},
-  handler: async (ctx) => {
-    // Get all sponsors without placement field
-    const allSponsors = await ctx.db.query("sponsors").collect();
-    
-    let updatedCount = 0;
-    for (const sponsor of allSponsors) {
-      // Cast to any to check for undefined placement on legacy documents
-      const legacySponsor = sponsor as any;
-      if (legacySponsor.placement === undefined) {
-        await ctx.db.patch(legacySponsor._id, {
-          placement: "card",
-          displayText: legacySponsor.displayText || legacySponsor.name,
-          updatedAt: Date.now(),
-        });
-        updatedCount++;
-      }
-    }
-    
-    return {
-      message: `Updated ${updatedCount} sponsors with placement='card'`,
-      totalSponsors: allSponsors.length,
-      updatedCount,
-    };
-  },
-});
