@@ -7,7 +7,7 @@ export const getActiveSponsors = query({
   handler: async (ctx) => {
     return await ctx.db
       .query("sponsors")
-      .withIndex("by_active", (q) => q.eq("isActive", true))
+      .filter((q) => q.eq(q.field("isActive"), true))
       .order("asc")
       .collect();
   },
@@ -21,9 +21,10 @@ export const getActiveSponsorsByPlacement = query({
   handler: async (ctx, args) => {
     return await ctx.db
       .query("sponsors")
-      .withIndex("by_active_placement", (q) => 
-        q.eq("isActive", true).eq("placement", args.placement)
-      )
+      .filter((q) => q.and(
+        q.eq(q.field("isActive"), true),
+        q.eq(q.field("placement"), args.placement)
+      ))
       .order("asc")
       .collect();
   },
@@ -35,7 +36,6 @@ export const getAllSponsors = query({
   handler: async (ctx) => {
     return await ctx.db
       .query("sponsors")
-      .withIndex("by_display_order")
       .order("asc")
       .collect();
   },
