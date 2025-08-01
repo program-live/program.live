@@ -46,7 +46,7 @@ export async function getHackerNewsStories(limit: number = 20): Promise<HNStoryI
           url: story.url!,
           date: new Date(story.time * 1000).toLocaleDateString('en-US', {
             month: 'short',
-            day: 'numeric'
+            day: '2-digit'
           })
         }));
 
