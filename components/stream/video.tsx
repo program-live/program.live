@@ -2,12 +2,13 @@
 
 import WarpDriveSatelliteEffect from "@/components/warp-drive-satellite-effect";
 import { useYouTubeLiveStatus } from "@/hooks/use-youtube-live-status";
+import { cn } from "@/lib/utils";
 
 export default function Video() {
   const { isLive } = useYouTubeLiveStatus();
   return (
     <div 
-      className="relative flex w-full overflow-hidden flex-shrink-0" 
+      className="relative flex w-full overflow-hidden flex-shrink-0"
       style={{ aspectRatio: '16/9' }}
     >
       {isLive ? (

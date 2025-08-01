@@ -11,7 +11,7 @@ const WARP_EFFECT_PROPS = {
   particleCount: 300,
   particleBrightness: 0.8,
   warpBrightness: 1,
-  className: "border-r border-b border-dotted "
+  className: "border-r border-b border-dotted h-full"
 };
 
 const FALLBACK_SPONSOR_NAME = "Buy Spot";
@@ -41,8 +41,8 @@ export default function SponsorCards({ sponsors }: { sponsors: Doc<"sponsors">[]
   const sponsorsToShow = displaySponsors.slice(0, 4);
 
   return (
-    <div className=" flex h-full min-h-[120px] md:min-h-[90px] max-h-[120px] xl:max-h-[175px]">
-      <div className="relative grid grid-cols-2 md:grid-cols-4 h-full border-t border-dotted w-full border-l">
+    <div className="flex min-h-[120px] max-h-[120px] md:min-h-[90px] xl:min-h-[145px] xl:max-h-[175px]">
+      <div className="flex-1 relative grid grid-cols-2 md:grid-cols-4 border-t border-dotted w-full border-l">
         <h2
           className="absolute text-center -top-5 -left-3 bg-background z-[1] px-2 hidden md:block"
           aria-hidden

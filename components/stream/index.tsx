@@ -10,9 +10,9 @@ export default async function StreamSection() {
   const sponsors = await fetchQuery(api.sponsors.getActiveSponsorsByPlacement, { placement: "card" })
 
   return (
-    <div className="flex-1 h-full flex flex-col pb-15 xl:pb-0 xl:overflow-y-auto xl:h-[calc(var(--main-content-height)-45px)] justify-between">
+    <div className="flex-1 flex flex-col pb-15 xl:pb-0 xl:overflow-y-auto xl:h-[calc(var(--main-content-height)-45px)] justify-between">
       <Video />
-      <div className="flex flex-col justify-between h-full">
+      <div className="flex flex-col justify-between">
         <div className='flex flex-col border-t border-r rounded-tr flex-1'>
           <div className="flex flex-col gap-x-15 md:flex-row items-center h-fit ">
             <div className='flex items-center py-5 w-full'>
@@ -43,6 +43,7 @@ export default async function StreamSection() {
               </Button>
             </div>
           </div>
+          {/* warning tape */}
           <p className="text-pretty col-span-3 pt-5 pb-15 border-t border-dotted pr-5">
             {currentStreamInfo?.description || (
               <>
