@@ -35,7 +35,7 @@ export default async function StreamSection() {
               </Button>
               <span className='border-l border-foreground min-h-[25px] h-full' />
               <Button size='lg' variant='outline' className='w-full md:w-fit h-full min-h-[25px] border-0 ' asChild>
-                <Link href="https://lu.ma/program?k=c&period=past" target='_blank'>
+                <Link href="https://lu.ma/program" target='_blank'>
                   <span className="sr-only">Join in-person</span>
                   <span className='text-15 leading-10 mb-3 mr-4'>✦</span>
                   <span aria-hidden>J0IN IN-PERS0N</span>
